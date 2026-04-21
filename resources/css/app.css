@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-teal: #006d5b;
+    --dark-teal: #004d40;
+}
+
+@layer components {
+    .btn-primary-teal {
+        @apply bg-[#006d5b] hover:bg-[#004d40] text-white font-medium py-2 px-4 rounded transition duration-200;
+    }
+}
+
+/* Custom Bottom Nav Styles */
+.bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 grid grid-cols-5 items-center h-16 z-50 lg:hidden;
+}
+
+.bottom-nav-item {
+    @apply flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold uppercase;
+}
+
+.bottom-nav-item.active {
+    @apply text-[#006d5b];
+}
+
+.bottom-nav-item-center {
+    @apply absolute -top-7 left-1/2 -translate-x-1/2 flex items-center justify-center w-14 h-14 bg-white rounded-full shadow-lg border-2 border-gray-100 text-[#006d5b];
+}
+
+.bottom-nav-item-center i {
+    @apply w-10 h-10 bg-[#006d5b] text-white flex items-center justify-center rounded-full;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Product Card Actions */
+.product-card:hover .product-actions {
+    @apply opacity-100 translate-x-0;
+}
+
+.product-actions {
+    @apply absolute right-2 top-2 flex flex-col gap-2 opacity-0 translate-x-4 transition-all duration-300;
+}
+
+.action-btn {
+    @apply w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-slate-600 hover:bg-[#006d5b] hover:text-white shadow-sm transition;
+}
+
+/* Floating WhatsApp Button */
+.whatsapp-float {
+    @apply fixed bottom-24 lg:bottom-10 right-6 w-14 h-14 bg-[#25d366] text-white rounded-full flex items-center justify-center shadow-2xl z-50 transition-transform hover:scale-110;
+}
+
+/* Service Card Hover */
+.service-card:hover {
+    @apply -translate-y-1 shadow-lg bg-white;
+}
