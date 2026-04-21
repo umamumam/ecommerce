@@ -10,13 +10,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'username', 'email', 'password', 'role', 'is_active', 'phone', 'address', 'province', 'city', 'district', 'postal_code', 'profile_photo', 'gender', 'dob'])]
 #[Hidden(['password', 'remember_token'])]
 // class User extends Authenticatable implements MustVerifyEmail
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 
     /**
      * Get the attributes that should be cast.

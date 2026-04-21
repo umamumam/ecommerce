@@ -61,8 +61,12 @@
             
             <nav class="flex items-center gap-6 ml-8">
                 <div class="flex items-center gap-6 border-r pr-6">
-                    <a href="#" class="flex flex-col items-center text-slate-700 hover:text-[#006d5b] transition group">
-                        <i class="ti ti-user ti-sm group-hover:scale-110 transition"></i>
+                    <a href="{{ auth()->check() ? (auth()->user()->role === 'admin' ? route('dashboard') : route('account')) : route('login') }}" class="flex flex-col items-center text-slate-700 hover:text-[#006d5b] transition group">
+                        @auth
+                            <img src="{{ auth()->user()->profile_photo ? asset('storage/'.auth()->user()->profile_photo) : asset('assets/img/avatars/1.png') }}" class="w-6 h-6 rounded-full object-cover group-hover:scale-110 transition border border-slate-100 shadow-sm">
+                        @else
+                            <i class="ti ti-user ti-sm group-hover:scale-110 transition"></i>
+                        @endauth
                         <span class="text-[9px] font-bold uppercase mt-1">Akun</span>
                     </a>
                     <a href="#" class="flex flex-col items-center text-slate-700 hover:text-[#006d5b] transition relative group">
@@ -87,10 +91,14 @@
                 <span class="text-[#006d5b]">TOKO</span><span class="text-[#f53003]">KITA</span>
             </a>
             <div class="flex items-center gap-5">
-                <div class="flex flex-col items-center text-slate-800">
-                    <i class="ti ti-user text-xl"></i>
-                    <span class="text-[8px] font-bold uppercase">Akun</span>
-                </div>
+                <a href="{{ auth()->check() ? (auth()->user()->role === 'admin' ? route('dashboard') : route('account')) : route('login') }}" class="flex flex-col items-center text-slate-800">
+                    @auth
+                        <img src="{{ auth()->user()->profile_photo ? asset('storage/'.auth()->user()->profile_photo) : asset('assets/img/avatars/1.png') }}" class="w-7 h-7 rounded-full object-cover border border-slate-100 shadow-sm">
+                    @else
+                        <i class="ti ti-user text-xl"></i>
+                    @endauth
+                    <span class="text-[8px] font-bold uppercase mt-0.5">Akun</span>
+                </a>
                 <div class="relative flex flex-col items-center text-slate-800">
                     <i class="ti ti-shopping-cart text-xl"></i>
                     <span class="text-[8px] font-bold uppercase">Cart</span>
@@ -464,5 +472,20 @@
         }
     </script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#006d5b',
+                    timer: 3000
+                });
+            @endif
+        });
+    </script>
 </body>
 </html>

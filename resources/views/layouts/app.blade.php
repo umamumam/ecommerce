@@ -128,8 +128,34 @@
     <!-- Main JS -->
     <script src="../../assets/js/main.js"></script>
 
-    <!-- Page JS -->
-    <script src="../../assets/js/dashboards-analytics.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Global Flash Message Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#006d5b',
+                    timer: 3000
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#ea5455'
+                });
+            @endif
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>
