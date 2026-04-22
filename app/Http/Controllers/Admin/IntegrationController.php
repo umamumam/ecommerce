@@ -28,6 +28,7 @@ class IntegrationController extends Controller
         $biteshipKey = \App\Models\Setting::where('key', 'biteship_api_key')->first()?->value ?? env('BITESHIP_API_KEY');
         $biteshipWebhook = \App\Models\Setting::where('key', 'biteship_webhook_url')->first()?->value ?? env('BITESHIP_WEBHOOK_URL');
         $xenditKey = \App\Models\Setting::where('key', 'xendit_secret_key')->first()?->value ?? env('XENDIT_SECRET_KEY');
+        $xenditToken = \App\Models\Setting::where('key', 'xendit_webhook_token')->first()?->value ?? env('XENDIT_CALLBACK_TOKEN');
 
         $accountInfo = [
             'name' => 'Premium Store',
@@ -35,6 +36,7 @@ class IntegrationController extends Controller
             'biteship_api_key' => $biteshipKey,
             'biteship_webhook' => $biteshipWebhook,
             'xendit_secret_key' => $xenditKey,
+            'xendit_webhook_token' => $xenditToken,
             'api_key_masked' => substr($biteshipKey, 0, 15) . '...',
         ];
 
@@ -57,6 +59,9 @@ class IntegrationController extends Controller
         }
         if ($request->has('xendit_secret_key')) {
             \App\Models\Setting::updateOrCreate(['key' => 'xendit_secret_key'], ['value' => $request->xendit_secret_key]);
+        }
+        if ($request->has('xendit_webhook_token')) {
+            \App\Models\Setting::updateOrCreate(['key' => 'xendit_webhook_token'], ['value' => $request->xendit_webhook_token]);
         }
 
         return back()->with('success', 'Konfigurasi API berhasil diperbarui.');

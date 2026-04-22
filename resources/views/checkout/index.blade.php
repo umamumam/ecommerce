@@ -297,7 +297,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('checkout.store') }}" method="POST">
+                        <form action="{{ route('checkout.store') }}" method="POST" x-ref="checkoutForm">
                             @csrf
                             <input type="hidden" name="shipping_name" :value="recipientName">
                             <input type="hidden" name="shipping_phone" :value="recipientPhone">
@@ -308,11 +308,11 @@
                             <input type="hidden" name="shipping_price" :value="selectedRate?.price">
                             <input type="hidden" name="shipping_postal_code" :value="selectedArea?.postcode">
 
-                            <button type="submit"
-                                :disabled="!selectedRate || !addressDetail || !recipientName || !recipientPhone || loadingRates"
-                                class="w-full py-4 btn-primary-teal rounded-sm text-sm font-medium tracking-widest disabled:bg-slate-300 disabled:cursor-not-allowed">
-                                BUAT PESANAN
-                            </button>
+                                <button type="submit"
+                                    :disabled="!selectedRate || !addressDetail || !recipientName || !recipientPhone || loadingRates"
+                                    class="w-full py-4 bg-[#006d5b] text-white rounded-sm text-sm font-bold tracking-widest disabled:bg-slate-300 disabled:cursor-not-allowed hidden lg:block shadow-md">
+                                    BUAT PESANAN
+                                </button>
                         </form>
                     </section>
                 </div>
@@ -335,6 +335,11 @@
                 loadingRates: false,
                 courierRates: [],
                 selectedRate: null,
+                submitting: false,
+
+                get totalAmount() {
+                    return {{ $totalPrice }} + (this.selectedRate ? this.selectedRate.price : 0);
+                },
 
                 init() {
                     if (this.areaSearch.length >= 3) {
@@ -411,12 +416,39 @@
                         currency: 'IDR',
                         minimumFractionDigits: 0
                     }).format(price);
+                },
+
+                submitOrder() {
+                    if (this.submitting) return;
+                    this.submitting = true;
+                    this.$refs.checkoutForm.submit();
                 }
             }
         }
     </script>
 
-    @include('layouts.bottom-nav')
-</body>
+    <!-- Custom Bottom Bar for Checkout (Shopee Style) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-[60] safe-area-bottom lg:hidden"
+        x-show="selectedRate" x-cloak x-transition>
+        <div class="max-w-[700px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-slate-500 font-bold uppercase tracking-tight leading-none mb-1">Total Pembayaran</span>
+                <span class="text-lg font-black text-[#006d5b] leading-none" x-text="formatPrice(totalAmount)"></span>
+            </div>
+            <button @click="submitOrder" :disabled="submitting"
+                class="flex-1 bg-[#006d5b] text-white h-12 rounded-lg font-black text-sm uppercase tracking-widest shadow-lg shadow-[#006d5b]/20 active:scale-95 transition disabled:opacity-50">
+                <span x-show="!submitting">Buat Pesanan</span>
+                <div x-show="submitting" class="flex items-center justify-center gap-2">
+                    <div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Memproses...</span>
+                </div>
+            </button>
+        </div>
+    </div>
 
+    <!-- Padding for Sticky Bottom -->
+    <div class="h-24 lg:hidden" x-show="selectedRate" x-cloak></div>
+
+    {{-- @include('layouts.bottom-nav') --}}
+</body>
 </html>

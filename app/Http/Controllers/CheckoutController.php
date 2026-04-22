@@ -149,6 +149,9 @@ class CheckoutController extends Controller
                 $transaction->update([
                     'payment_link' => $invoice['invoice_url']
                 ]);
+
+                // Redirect DIRECTLY to Xendit payment page
+                return redirect($invoice['invoice_url']);
             }
 
             return redirect()->route('checkout.success', $transaction->id);

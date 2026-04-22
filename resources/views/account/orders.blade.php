@@ -118,9 +118,9 @@
                     <div class="flex justify-end gap-2 md:gap-3">
                         @if($trx->status == 'pending' && $trx->payment_link)
                             <a href="{{ $trx->payment_link }}" target="_blank" 
-                               class="px-4 md:px-6 py-2 bg-shopee text-white text-[11px] md:text-[12px] font-bold rounded-sm shadow-sm hover:opacity-90 transition flex items-center gap-2">
+                               class="px-4 md:px-6 py-2 bg-[#fe2c22] text-white text-[11px] md:text-[12px] font-bold rounded-sm shadow-sm hover:opacity-90 transition flex items-center gap-2">
                                 <i class="ti ti-wallet"></i>
-                                Bayar Sekarang
+                                BAYAR SEKARANG
                             </a>
                         @elseif($trx->status == 'shipping')
                             <button class="px-4 md:px-6 py-2 border border-slate-200 text-slate-600 text-[11px] md:text-[12px] font-medium rounded-sm hover:bg-slate-50 transition">

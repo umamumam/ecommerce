@@ -5,59 +5,89 @@
         <div class="card overflow-hidden">
             <div class="table-responsive text-nowrap">
                 <table class="table table-hover">
-                    <thead class="table-light">
+                    <thead class="bg-light">
                         <tr>
-                            <th class="text-[10px] font-black uppercase tracking-widest">Order ID</th>
-                            <th class="text-[10px] font-black uppercase tracking-widest">Pelanggan</th>
-                            <th class="text-[10px] font-black uppercase tracking-widest">Total</th>
-                            <th class="text-[10px] font-black uppercase tracking-widest">Kurir</th>
-                            <th class="text-[10px] font-black uppercase tracking-widest">Status</th>
-                            <th class="text-[10px] font-black uppercase tracking-widest text-center">Aksi</th>
+                            <th class="ps-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Order & Customer</th>
+                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Produk</th>
+                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Total</th>
+                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Ekspedisi</th>
+                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
+                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach($orders as $order)
+                        @forelse($orders as $order)
                         <tr>
-                            <td>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-black text-slate-900">{{ $order->code }}</span>
-                                    <span class="text-[9px] text-slate-400">{{ $order->created_at->format('d M Y, H:i') }}</span>
+                            <td class="ps-4 py-4">
+                                <div class="d-flex flex-column">
+                                    <span class="text-xs font-black text-slate-900 leading-none mb-1">{{ $order->code }}</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ $order->user->name }}</span>
                                 </div>
                             </td>
                             <td>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-black text-[10px]">{{ substr($order->shipping_name, 0, 1) }}</div>
-                                    <div class="flex flex-col">
-                                        <span class="text-xs font-bold">{{ $order->shipping_name }}</span>
-                                        <span class="text-[10px] text-slate-400">{{ $order->shipping_phone }}</span>
+                                <div class="d-flex align-items-center">
+                                    @php $firstDetail = $order->details->first(); @endphp
+                                    @if($firstDetail)
+                                    <div class="w-10 h-10 rounded border p-1 bg-white me-2">
+                                        <img src="{{ $firstDetail->product->image ? (Str::startsWith($firstDetail->product->image, 'http') ? $firstDetail->product->image : asset('storage/'.$firstDetail->product->image)) : asset('assets/img/elements/1.jpg') }}" class="w-full h-full object-cover rounded">
                                     </div>
+                                    <div class="d-flex flex-column">
+                                        <span class="text-[11px] font-bold text-slate-700 line-clamp-1" style="max-width: 140px;">{{ $firstDetail->product->name }}</span>
+                                        @if($order->details->count() > 1)
+                                        <span class="text-[9px] text-primary font-black uppercase">+{{ $order->details->count() - 1 }} Item Lainnya</span>
+                                        @endif
+                                    </div>
+                                    @endif
                                 </div>
                             </td>
-                            <td><span class="text-xs font-black">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span></td>
                             <td>
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] font-black uppercase">{{ $order->shipping_courier }}</span>
-                                    <span class="text-[9px] text-slate-400">{{ $order->shipping_service }}</span>
+                                <div class="text-xs font-black text-slate-800">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-[10px] font-bold text-slate-600 uppercase">{{ $order->shipping_courier }}</span>
+                                    <span class="text-[9px] text-slate-400 font-medium uppercase tracking-tight">{{ $order->shipping_service }}</span>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge @if($order->status == 'pending') bg-label-warning @elseif($order->status == 'paid') bg-label-success @elseif($order->status == 'processing') bg-label-primary @else bg-label-secondary @endif text-[9px] uppercase font-black">
+                                @php
+                                    $class = match($order->status) {
+                                        'pending' => 'bg-label-warning',
+                                        'paid' => 'bg-label-success',
+                                        'processing' => 'bg-label-info',
+                                        'shipping' => 'bg-label-primary',
+                                        'completed' => 'bg-label-emerald',
+                                        default => 'bg-label-secondary'
+                                    };
+                                @endphp
+                                <span class="badge {{ $class }} text-[9px] font-black uppercase px-2 py-1.5 rounded">
                                     {{ $order->status }}
                                 </span>
                             </td>
-                            <td class="text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    @if($order->status == 'paid' && !$order->biteship_order_id)
-                                    <form action="{{ route('admin.orders.shipment', $order->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-xs btn-primary font-black uppercase tracking-tighter">Request Pickup</button>
+                            <td class="text-center pe-4">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-icon btn-sm btn-label-primary shadow-none">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-icon btn-sm btn-label-danger shadow-none">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
                                     </form>
-                                    @endif
-                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-xs btn-outline-secondary">Detail</a>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-5 text-center">
+                                    <i class="ti ti-receipt-off display-2 text-slate-200"></i>
+                                    <h6 class="mt-3 text-slate-400">Belum ada pesanan yang masuk</h6>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

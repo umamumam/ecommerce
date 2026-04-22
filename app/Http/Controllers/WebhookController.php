@@ -76,6 +76,15 @@ class WebhookController extends Controller
      */
     public function handleXendit(Request $request)
     {
+        // Validate Callback Token
+        $callbackToken = $request->header('x-callback-token');
+        $storedToken = \App\Models\Setting::where('key', 'xendit_webhook_token')->first()?->value ?? env('XENDIT_CALLBACK_TOKEN');
+
+        if ($storedToken && $callbackToken !== $storedToken) {
+            Log::warning("Xendit Webhook called with invalid token.");
+            return response()->json(['message' => 'invalid token'], 403);
+        }
+
         $payload = $request->all();
         
         // Save log

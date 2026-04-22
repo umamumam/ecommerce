@@ -32,6 +32,10 @@ class OrderController extends Controller
     {
         $order = Transaction::findOrFail($id);
         
+        // Anti-fraud: Don't allow shipment for unpaid orders
+        if ($order->status !== 'paid') {
+            return back()->with('error', 'Pesanan ini belum dibayar. Tidak dapat membuat pengiriman.');
+        }
         // Prepare data for Biteship
         $items = [];
         foreach($order->details as $detail) {
@@ -82,5 +86,13 @@ class OrderController extends Controller
         }
 
         return back()->with('error', 'Gagal membuat pengiriman: ' . ($response['error'] ?? 'Unknown Error'));
+    }
+
+    public function destroy($id)
+    {
+        $order = Transaction::findOrFail($id);
+        $order->delete();
+
+        return back()->with('success', 'Pesanan berhasil dihapus.');
     }
 }

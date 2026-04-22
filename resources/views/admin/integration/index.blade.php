@@ -41,6 +41,14 @@
                                 <input type="password" name="xendit_secret_key" value="{{ $accountInfo['xendit_secret_key'] }}" 
                                     class="w-full bg-slate-50/80 p-4 rounded-2xl border border-slate-100 font-mono text-[10px] text-slate-700 focus:bg-white focus:border-emerald-500 transition-all outline-none">
                             </div>
+
+                            <!-- Xendit Webhook Token -->
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 block">Xendit Webhook Verification Token</label>
+                                <input type="password" name="xendit_webhook_token" value="{{ $accountInfo['xendit_webhook_token'] ?? '' }}" 
+                                    class="w-full bg-slate-50/80 p-4 rounded-2xl border border-slate-100 font-mono text-[10px] text-slate-700 focus:bg-white focus:border-emerald-500 transition-all outline-none">
+                                <p class="text-[9px] text-slate-400 mt-2">Gunakan token ini untuk verifikasi pengiriman data (callback) dari Xendit.</p>
+                            </div>
                         </div>
 
                         <div class="mt-10 pt-8 border-t border-slate-100">

@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     
     // Order Management
     Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+    Route::delete('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{id}/shipment', [\App\Http\Controllers\Admin\OrderController::class, 'createShipment'])->name('admin.orders.shipment');
 
