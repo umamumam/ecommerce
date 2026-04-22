@@ -144,17 +144,26 @@ class CheckoutController extends Controller
             session()->forget('cart');
 
             // Create Xendit Invoice
-            $invoice = $this->xendit->createInvoice($transaction);
-            if ($invoice && isset($invoice['invoice_url'])) {
+            try {
+                $invoice = $this->xendit->createInvoice($transaction);
+                
+                if (!$invoice || !isset($invoice['invoice_url'])) {
+                    throw new \Exception('Gagal membuat invoice Xendit. Mohon cek API Key Anda atau log sistem.');
+                }
+
                 $transaction->update([
                     'payment_link' => $invoice['invoice_url']
                 ]);
 
                 // Redirect DIRECTLY to Xendit payment page
                 return redirect($invoice['invoice_url']);
-            }
 
-            return redirect()->route('checkout.success', $transaction->id);
+            } catch (\Exception $e) {
+                // If it fails, rollback transaction and show error
+                DB::rollBack();
+                Log::error("Xendit Error: " . $e->getMessage());
+                return back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+            }
         });
     }
 
