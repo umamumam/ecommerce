@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}" />
@@ -18,14 +18,22 @@
     <style>
         body {
             font-family: 'Public Sans', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            background-color: #f5f5f5;
+            color: #222;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .btn-primary-teal {
+            background-color: #006d5b;
+            color: white !important;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary-teal:hover {
+            opacity: 0.9;
+        }
+
+        .price-teal {
+            color: #006d5b;
         }
 
         [x-cloak] {
@@ -36,190 +44,172 @@
             display: none;
         }
 
-        .step-active {
-            color: #006d5b;
-            border-bottom: 3px solid #006d5b;
+        .input-shopee {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-shopee:focus {
+            border-color: #006d5b;
+            outline: none;
+        }
+
+        @media (max-width: 640px) {
+            .mobile-flat {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
         }
     </style>
 </head>
 
 <body class="antialiased" x-data="checkoutPage()">
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/cart" class="flex items-center gap-2 text-slate-500 hover:text-[#006d5b] transition font-bold text-xs uppercase tracking-widest">
-                <i class="ti ti-arrow-left"></i>
-                <span>Kembali ke Keranjang</span>
-            </a>
+    <header class="bg-white sticky top-0 z-50 border-b border-slate-100 shadow-sm">
+        <div class="max-w-[1400px] mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/cart" class="flex items-center gap-2 text-slate-500 hover:text-[#006d5b] transition">
+                    <i class="ti ti-arrow-left"></i>
+                    <span class="text-sm font-medium">Checkout</span>
+                </a>
+            </div>
+
             <div class="hidden md:flex items-center gap-8">
-                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest" :class="!selectedArea ? 'text-[#006d5b]' : 'text-slate-400'">
-                    <span class="w-5 h-5 rounded-full border border-current flex items-center justify-center">1</span>
+                <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest"
+                    :class="!selectedArea ? 'text-[#006d5b]' : 'text-slate-400'">
+                    <span
+                        class="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">1</span>
                     Alamat
                 </div>
                 <i class="ti ti-chevron-right text-slate-300"></i>
-                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest" :class="selectedArea && !selectedRate ? 'text-[#006d5b]' : 'text-slate-400'">
-                    <span class="w-5 h-5 rounded-full border border-current flex items-center justify-center">2</span>
+                <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest"
+                    :class="selectedArea && !selectedRate ? 'text-[#006d5b]' : 'text-slate-400'">
+                    <span
+                        class="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">2</span>
                     Pengiriman
                 </div>
                 <i class="ti ti-chevron-right text-slate-300"></i>
-                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest" :class="selectedRate ? 'text-[#006d5b]' : 'text-slate-400'">
-                    <span class="w-5 h-5 rounded-full border border-current flex items-center justify-center">3</span>
+                <div class="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest"
+                    :class="selectedRate ? 'text-[#006d5b]' : 'text-slate-400'">
+                    <span
+                        class="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">3</span>
                     Pembayaran
                 </div>
             </div>
-            <div class="md:hidden text-xs font-black uppercase text-[#006d5b]">Checkout</div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-8 lg:py-12">
-        <div class="flex flex-col lg:flex-row gap-10">
-            <!-- Left: Form -->
-            <div class="w-full lg:w-2/3 flex flex-col gap-8">
+    <main class="max-w-[1400px] mx-auto md:px-4 py-4 md:py-6 lg:py-8 font-sans">
+        <div class="flex flex-col lg:flex-row gap-4">
+            <!-- Left: Sections -->
+            <div class="w-full lg:flex-1 flex flex-col gap-4">
 
-                <!-- Recipient Info -->
-                <section class="bg-white p-6 lg:p-10 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] border border-slate-50">
-                    <div class="flex items-center gap-4 mb-8">
-                        <div
-                            class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner">
-                            <i class="ti ti-user text-2xl"></i>
-                        </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-slate-900">Informasi Penerima</h2>
+                <!-- Alamat Section -->
+                <section class="bg-white p-4 md:p-6 shadow-sm border border-slate-100 mobile-flat">
+                    <div class="flex items-center gap-3 mb-6 border-b pb-3">
+                        <i class="ti ti-map-pin text-[#006d5b] text-xl"></i>
+                        <h2 class="text-base font-medium text-slate-800">Alamat Pengiriman</h2>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 block">Nama
-                                Lengkap</label>
-                            <input type="text" x-model="recipientName" placeholder="Nama Penerima"
-                                class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-[#006d5b] focus:ring-0 transition font-bold text-sm">
+                            <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Nama
+                                Penerima</label>
+                            <input type="text" x-model="recipientName" placeholder="Masukkan nama..."
+                                class="input-shopee">
                         </div>
                         <div>
-                            <label
-                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 block">Nomor
+                            <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">No.
                                 WhatsApp</label>
                             <input type="text" x-model="recipientPhone" placeholder="Contoh: 0812..."
-                                class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-[#006d5b] focus:ring-0 transition font-bold text-sm">
+                                class="input-shopee">
                         </div>
                     </div>
-                </section>
 
-                <!-- Shipping Address -->
-                <section class="bg-white p-6 lg:p-10 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] border border-slate-50">
-                    <div class="flex items-center gap-4 mb-8">
-                        <div
-                            class="w-12 h-12 bg-[#006d5b]/10 text-[#006d5b] rounded-2xl flex items-center justify-center shadow-inner">
-                            <i class="ti ti-map-pin-2 text-2xl"></i>
-                        </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-slate-900">Alamat Pengiriman</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="mb-6">
+                        <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Cari Kecamatan /
+                            Kota</label>
                         <div class="relative">
-                            <label
-                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 block">Cari
-                                Kecamatan / Kota</label>
-                            <div class="relative">
-                                <input type="text" x-model="areaSearch" @input.debounce.500ms="searchArea()"
-                                    placeholder="Ketik minimal 3 huruf..."
-                                    class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-[#006d5b] focus:ring-0 transition font-bold text-sm">
-                                <i class="ti ti-search absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            </div>
+                            <input type="text" x-model="areaSearch" @input.debounce.500ms="searchArea()"
+                                placeholder="Ketik minimal 3 huruf..." class="input-shopee">
+                            <i class="ti ti-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
-                            <!-- Search Results Dropdown -->
+                            <!-- Search Results -->
                             <div x-show="areaResults.length > 0"
-                                class="absolute left-0 right-0 mt-3 bg-white rounded-[2rem] shadow-2xl border border-slate-100 z-50 max-h-72 overflow-y-auto no-scrollbar py-2"
+                                class="absolute left-0 right-0 mt-1 bg-white shadow-xl border border-slate-100 z-50 max-h-60 overflow-y-auto no-scrollbar py-1"
                                 x-cloak @click.away="areaResults = []">
                                 <template x-for="area in areaResults" :key="area.id">
                                     <div @click="selectArea(area)"
-                                        class="px-6 py-4 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col group transition text-left">
-                                        <span class="text-xs font-black text-slate-900 group-hover:text-[#006d5b]"
+                                        class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 flex flex-col group transition">
+                                        <span class="text-[13px] font-medium text-slate-800 group-hover:text-[#006d5b]"
                                             x-text="area.name"></span>
-                                        <span class="text-[9px] text-slate-400 font-bold uppercase mt-1"
+                                        <span class="text-[10px] text-slate-400 mt-1"
                                             x-text="area.formatted_address"></span>
                                     </div>
                                 </template>
                             </div>
                         </div>
+                    </div>
 
-                        <div x-show="selectedArea" x-cloak
-                            class="bg-[#006d5b]/5 p-5 rounded-2xl border-2 border-dashed border-[#006d5b]/20 flex items-center justify-between animate-fade-in shadow-inner">
-                            <div class="flex items-center gap-4">
-                                <div class="w-8 h-8 bg-[#006d5b] text-white rounded-lg flex items-center justify-center">
-                                    <i class="ti ti-check text-lg"></i>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-black text-[#006d5b] uppercase tracking-widest"
-                                        x-text="selectedArea?.name"></span>
-                                    <span class="text-[9px] font-bold text-slate-400 mt-0.5"
-                                        x-text="selectedArea?.postcode"></span>
-                                </div>
-                            </div>
-                            <button @click="selectedArea = null; areaSearch = ''; courierRates = []"
-                                class="w-8 h-8 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all flex items-center justify-center">
-                                <i class="ti ti-x text-sm"></i>
-                            </button>
+                    <div x-show="selectedArea" x-cloak
+                        class="mb-6 bg-slate-50 p-4 rounded-sm border border-slate-200 flex items-center justify-between animate-fade-in">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] font-medium text-[#006d5b]" x-text="selectedArea?.name"></span>
+                            <span class="text-[11px] text-slate-400 mt-1"
+                                x-text="'Kodepos: ' + selectedArea?.postal_code"></span>
                         </div>
+                        <button @click="selectedArea = null; areaSearch = ''; courierRates = []"
+                            class="text-slate-400 hover:text-red-500">
+                            <i class="ti ti-x"></i>
+                        </button>
+                    </div>
 
-                        <div>
-                            <label
-                                class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 block">Alamat
-                                Lengkap & Patokan</label>
-                            <textarea x-model="addressDetail" placeholder="Nama Jalan, No. Rumah, RT/RW, Patokan..."
-                                class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-[#006d5b] focus:ring-0 transition font-bold text-sm min-h-[120px]"></textarea>
-                        </div>
+                    <div>
+                        <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Detail Alamat (Nama
+                            Jalan, No. Rumah)</label>
+                        <textarea x-model="addressDetail" placeholder="Tuliskan alamat lengkap..."
+                            class="input-shopee min-h-[100px]"></textarea>
                     </div>
                 </section>
 
-                <!-- Shipping Method -->
-                <section class="bg-white p-6 lg:p-10 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] border border-slate-50"
-                    x-show="selectedArea" x-cloak x-transition>
-                    <div class="flex items-center gap-4 mb-8">
-                        <div
-                            class="w-12 h-12 bg-emerald-50 text-[#006d5b] rounded-2xl flex items-center justify-center shadow-inner">
-                            <i class="ti ti-truck-delivery text-2xl"></i>
-                        </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-slate-900">Metode Pengiriman</h2>
+                <!-- Shipping Method Section -->
+                <section class="bg-white p-4 md:p-6 shadow-sm border border-slate-100 mobile-flat" x-show="selectedArea"
+                    x-cloak x-transition>
+                    <div class="flex items-center gap-3 mb-6 border-b pb-3">
+                        <i class="ti ti-truck text-[#006d5b] text-xl"></i>
+                        <h2 class="text-base font-medium text-slate-800">Opsi Pengiriman</h2>
                     </div>
 
-                    <div x-show="loadingRates" class="flex flex-col items-center py-16">
-                        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-t-2 border-[#006d5b] mb-4">
-                        </div>
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Menghitung
-                            Ongkir...</span>
+                    <div x-show="loadingRates" class="flex flex-col items-center py-10">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#006d5b] mb-4"></div>
+                        <span class="text-[11px] text-slate-400 font-medium">Mencari kurir terbaik...</span>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="!loadingRates && courierRates.length > 0">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3"
+                        x-show="!loadingRates && courierRates.length > 0">
                         <template x-for="rate in courierRates" :key="rate.courier_code + rate.courier_service_code">
                             <div @click="selectCourier(rate)"
-                                class="courier-card p-5 rounded-[2rem] bg-white border-2 cursor-pointer shadow-sm relative group overflow-hidden transition-all duration-300"
-                                :class="selectedRate?.courier_service_code === rate.courier_service_code ? 'border-[#006d5b] bg-[#006d5b]/5 scale-[1.02]' : 'border-slate-50 hover:border-slate-200'">
-                                <div class="flex items-center justify-between mb-4 relative z-10">
-                                    <div class="flex items-center gap-3 text-left">
-                                        <div
-                                            class="w-10 h-10 bg-white rounded-xl flex items-center justify-center p-1.5 border border-slate-100 shadow-sm">
-                                            <img :src="rate.courier_logo" class="w-full h-full object-contain"
-                                                :alt="rate.courier_name">
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[11px] font-black uppercase text-slate-900"
-                                                x-text="rate.courier_name"></span>
-                                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter"
-                                                x-text="rate.courier_service_name"></span>
-                                        </div>
+                                class="p-4 border rounded-sm cursor-pointer transition-all duration-200"
+                                :class="selectedRate?.courier_service_code === rate.courier_service_code ? 'border-[#006d5b] bg-[#006d5b]/5' : 'border-slate-200 hover:border-[#006d5b]/50'">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <img :src="rate.courier_logo" class="w-6 h-6 object-contain">
+                                        <span class="text-[13px] font-medium uppercase text-slate-700"
+                                            x-text="rate.courier_name"></span>
                                     </div>
-                                    <span
-                                        class="text-xs font-black text-[#006d5b] bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100/50"
+                                    <span class="text-[13px] font-medium text-[#006d5b]"
                                         x-text="formatPrice(rate.price)"></span>
                                 </div>
-                                <div class="flex items-center gap-2 relative z-10">
-                                    <i class="ti ti-clock text-slate-400 text-xs"></i>
-                                    <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest text-left"
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[11px] text-slate-500 font-medium uppercase"
+                                        x-text="rate.courier_service_name"></span>
+                                    <span class="text-[10px] text-slate-400"
                                         x-text="'Estimasi: ' + rate.duration"></span>
-                                </div>
-
-                                <div x-show="selectedRate?.courier_service_code === rate.courier_service_code"
-                                    class="absolute -right-2 -bottom-2 text-emerald-500/10 pointer-events-none">
-                                    <i class="ti ti-circle-check-filled text-[60px]"></i>
                                 </div>
                             </div>
                         </template>
@@ -228,31 +218,28 @@
             </div>
 
             <!-- Right: Order Summary -->
-            <div class="w-full lg:w-1/3">
-                <div class="sticky top-28 flex flex-col gap-6">
-                    <section class="bg-white p-8 lg:p-10 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] border border-slate-50">
-                        <h2
-                            class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-8 border-b border-slate-50 pb-4">
-                            Ringkasan Pesanan</h2>
+            <div class="w-full lg:w-[400px]">
+                <div class="sticky top-24 flex flex-col gap-4">
+                    <section class="bg-white p-4 md:p-6 shadow-sm border border-slate-100 mobile-flat">
+                        <h2 class="text-sm font-medium text-slate-800 mb-6 border-b pb-3">Pesanan Anda</h2>
 
-                        <!-- Cart Items Mini View -->
-                        <div class="flex flex-col gap-5 mb-8 max-h-60 overflow-y-auto no-scrollbar pr-2">
+                        <!-- Cart Items -->
+                        <div class="flex flex-col gap-4 mb-8 max-h-[400px] overflow-y-auto no-scrollbar">
                             @foreach($cart as $id => $item)
-                            <div class="flex gap-4 group">
-                                <div
-                                    class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-slate-100 shadow-sm transition group-hover:scale-105">
+                            <div class="flex gap-3 items-start">
+                                <div class="w-16 h-16 rounded-sm bg-slate-50 border shrink-0">
                                     @php
                                     $img = $item['image'] ? (Str::startsWith($item['image'], 'http') ? $item['image'] :
                                     asset('storage/'.$item['image'])) : asset('assets/img/elements/1.jpg');
                                     @endphp
-                                    <img src="{{ $img }}" class="w-full h-full object-cover">
+                                    <img src="{{ $img }}" class="w-full h-full object-cover rounded-sm">
                                 </div>
-                                <div class="flex flex-col justify-center flex-1 text-left min-w-0">
-                                    <h3 class="text-[10px] font-black uppercase text-slate-800 truncate leading-tight">{{ $item['name'] }}</h3>
-                                    <div class="flex items-center justify-between mt-1.5">
-                                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $item['quantity']
-                                            }}x @ Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
-                                        <span class="text-[10px] font-black text-slate-900 italic">Rp {{
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-[12px] font-normal text-slate-800 line-clamp-2 leading-snug mb-1">{{
+                                        $item['name'] }}</h3>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[11px] text-slate-400">x{{ $item['quantity'] }}</span>
+                                        <span class="text-[13px] font-medium text-slate-800">Rp{{
                                             number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                                     </div>
                                 </div>
@@ -260,26 +247,22 @@
                             @endforeach
                         </div>
 
-                        <div class="flex flex-col gap-4 mb-8">
-                            <div
-                                class="flex justify-between items-center text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                                <span>Subtotal</span>
-                                <span class="text-slate-900 font-black italic">Rp {{ number_format($totalPrice, 0, ',',
-                                    '.') }}</span>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Subtotal Produk</span>
+                                <span class="font-medium text-slate-800">Rp{{ number_format($totalPrice, 0, ',', '.')
+                                    }}</span>
                             </div>
-                            <div
-                                class="flex justify-between items-center text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                                <span>Ongkos Kirim</span>
-                                <span class="text-[#006d5b] font-black italic"
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Subtotal Pengiriman</span>
+                                <span class="font-medium text-[#006d5b]"
                                     x-text="selectedRate ? formatPrice(selectedRate.price) : 'Rp 0'"></span>
                             </div>
-                        </div>
-
-                        <div
-                            class="flex justify-between items-center mb-10 bg-slate-50/50 p-6 rounded-3xl border border-slate-100 shadow-inner">
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-900">Total Akhir</span>
-                            <span class="text-2xl font-black text-[#006d5b] italic tracking-tighter"
-                                x-text="formatPrice({{ $totalPrice }} + (selectedRate ? selectedRate.price : 0))"></span>
+                            <div class="pt-4 border-t flex justify-between items-center">
+                                <span class="text-base font-medium">Total Pembayaran</span>
+                                <span class="text-xl font-medium price-teal"
+                                    x-text="formatPrice({{ $totalPrice }} + (selectedRate ? selectedRate.price : 0))"></span>
+                            </div>
                         </div>
 
                         <form action="{{ route('checkout.store') }}" method="POST">
@@ -295,16 +278,10 @@
 
                             <button type="submit"
                                 :disabled="!selectedRate || !addressDetail || !recipientName || !recipientPhone || loadingRates"
-                                class="w-full py-5 rounded-[2rem] bg-[#006d5b] text-white font-black text-[13px] uppercase tracking-[0.2em] shadow-xl shadow-emerald-900/20 disabled:grayscale disabled:opacity-50 disabled:cursor-not-allowed group transition hover:bg-[#004d40] active:scale-95 flex items-center justify-center gap-3">
-                                BUAT PESANAN <i class="ti ti-arrow-right group-hover:translate-x-1 transition"></i>
+                                class="w-full py-4 btn-primary-teal rounded-sm text-sm font-medium tracking-widest disabled:bg-slate-300 disabled:cursor-not-allowed">
+                                BUAT PESANAN
                             </button>
                         </form>
-
-                        <div class="mt-8 pt-8 border-t border-slate-50 flex flex-col items-center gap-4">
-                            <p class="text-[9px] text-center text-slate-400 font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                                <i class="ti ti-lock text-[#006d5b] text-base"></i> Transaksi Aman & Terenkripsi
-                            </p>
-                        </div>
                     </section>
                 </div>
             </div>
@@ -372,8 +349,9 @@
                         const res = await fetch('/shipping/rates', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json', // Fixed header
+                                'Content-Type': 'application/json',
                                 'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             body: JSON.stringify({
@@ -405,7 +383,7 @@
             }
         }
     </script>
-    
+
     @include('layouts.bottom-nav')
 </body>
 
