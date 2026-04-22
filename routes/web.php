@@ -48,6 +48,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     // Xendit
     Route::get('/xendit', [\App\Http\Controllers\Admin\XenditController::class, 'index'])->name('admin.xendit.index');
+
+    // Courier Management
+    Route::get('/couriers', [\App\Http\Controllers\Admin\CourierController::class, 'index'])->name('admin.couriers.index');
+    Route::post('/couriers', [\App\Http\Controllers\Admin\CourierController::class, 'store'])->name('admin.couriers.store');
+    Route::post('/couriers/{id}/toggle', [\App\Http\Controllers\Admin\CourierController::class, 'toggle']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -78,6 +83,12 @@ Route::middleware('auth')->group(function () {
         return view('account.transactions.show', compact('transaction'));
     })->name('account.transactions.show');
 });
+
+// Guest Friendly Cart Routes
+Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/update', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
 Route::post('/webhook/biteship', [\App\Http\Controllers\Api\BiteshipWebhookController::class, 'handle']);
 Route::post('/webhook/xendit', [\App\Http\Controllers\WebhookController::class, 'handleXendit']);

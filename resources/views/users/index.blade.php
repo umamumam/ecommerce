@@ -324,8 +324,8 @@
             // Edit User
             $(document).on('click', '.edit-user', function() {
                 const id = $(this).data('id');
-                $.get(`/users/${id}`, function(user) {
-                    $('#editUserForm').attr('action', `/users/${id}`);
+                $.get(`/admin/users/${id}`, function(user) {
+                    $('#editUserForm').attr('action', `/admin/users/${id}`);
                     $('#edit_name').val(user.name);
                     $('#edit_email').val(user.email);
                     $('#edit_username').val(user.username);
@@ -340,7 +340,7 @@
             $(document).on('click', '.delete-user', function() {
                 const id = $(this).data('id');
                 const form = $('#deleteUserForm');
-                form.attr('action', `/users/${id}`);
+                form.attr('action', `/admin/users/${id}`);
                 
                 Swal.fire({
                     title: 'Apakah anda yakin?',

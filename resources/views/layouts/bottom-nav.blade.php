@@ -9,8 +9,11 @@
     </a>
     
     <div class="relative flex justify-center">
-        <a href="#" class="bottom-nav-item-center">
+        <a href="{{ route('cart.index') }}" class="bottom-nav-item-center relative">
             <i class="ti ti-shopping-cart"></i>
+            @if(count(session('cart', [])) > 0)
+            <span class="absolute -top-1 -right-1 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-white font-bold">{{ count(session('cart', [])) }}</span>
+            @endif
         </a>
     </div>
 

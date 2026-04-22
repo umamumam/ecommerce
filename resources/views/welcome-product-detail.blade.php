@@ -45,19 +45,16 @@
         }
 
         .gallery-main {
-            /* Rasio 1:1 di mobile agar pas, dan kita limit maksimalnya di desktop */
             aspect-ratio: 4 / 5;
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1);
             position: relative;
             background-color: transparent;
-            /* Pastikan transparan agar tidak ada tepi putih */
         }
 
         @media (min-width: 1024px) {
             .gallery-main {
-                /* Di desktop sedikit lebih tinggi tapi ada max-height agar info sebelah kanan tetap naik */
                 aspect-ratio: 4 / 5;
                 max-height: 480px;
             }
@@ -67,7 +64,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Ini yang membuat foto menutupi frame penuh tanpa ruang putih */
             object-position: center;
         }
 
@@ -104,13 +100,6 @@
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-
-        .premium-badge {
-            background: linear-gradient(90deg, #006d5b, #009688);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 900;
-        }
     </style>
 </head>
 
@@ -120,25 +109,86 @@
     selectedV1: null,
     selectedV2: null,
     basePrice: {{ $product->price }},
-    variantPrices: {}, // Placeholder for future variant pricing data
-    get currentPrice() {
-        // Logic for specific variant price can be added here
-        return this.basePrice;
-    },
     formatRupiah(num) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+    },
+    addToCart(redirect = false) {
+        // Validasi Varian jika ada
+        @if($product->variant_1_name)
+        if(!this.selectedV1) {
+            Swal.fire({ icon: 'warning', title: 'Pilih Varian', text: 'Silakan pilih {{ $product->variant_1_name }} terlebih dahulu' });
+            return;
+        }
+        @endif
+        @if($product->variant_2_name)
+        if(!this.selectedV2) {
+            Swal.fire({ icon: 'warning', title: 'Pilih Varian', text: 'Silakan pilih {{ $product->variant_2_name }} terlebih dahulu' });
+            return;
+        }
+        @endif
+
+        const payload = {
+            product_id: '{{ $product->id }}',
+            qty: this.qty,
+            variant_1: this.selectedV1,
+            variant_2: this.selectedV2,
+            _token: '{{ csrf_token() }}'
+        };
+
+        fetch('{{ route('cart.add') }}', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (redirect) {
+                    window.location.href = '{{ route('checkout.index') }}';
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            } else {
+                Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Terjadi kesalahan' });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Server Error' });
+        });
     }
 }">
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-bottom">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
         <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2 group">
                 <i class="ti ti-arrow-left text-slate-800 group-hover:-translate-x-2 transition"></i>
                 <span class="font-bold text-slate-800">Kembali</span>
             </a>
-            <div class="flex items-center gap-4">
-                <i class="ti ti-share text-slate-600 cursor-pointer hover:text-primary"></i>
-                <i class="ti ti-heart text-slate-600 cursor-pointer hover:text-red-500"></i>
+            <div class="flex items-center gap-6">
+                <i class="ti ti-share text-slate-600 cursor-pointer hover:text-[#006d5b] transition"></i>
+                <a href="{{ route('cart.index') }}" class="relative group">
+                    <i class="ti ti-shopping-cart text-slate-600 group-hover:text-[#006d5b] transition"></i>
+                    @if(count(session('cart', [])) > 0)
+                        <span class="absolute -top-2 -right-2 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border-2 border-white font-black animate-bounce">
+                            {{ count(session('cart', [])) }}
+                        </span>
+                    @endif
+                </a>
+                <i class="ti ti-heart text-slate-600 cursor-pointer hover:text-red-500 transition"></i>
             </div>
         </div>
     </header>
@@ -149,8 +199,7 @@
             <div class="w-full lg:w-[40%]">
                 <div class="sticky top-24">
                     <div class="gallery-main mb-4 border border-slate-200/50">
-                        <img :src="activeImg" class="w-full h-full object-cover transition duration-700 ease-out"
-                            id="main-img">
+                        <img :src="activeImg" class="w-full h-full object-cover transition duration-700 ease-out">
                         @if($product->is_active)
                         <div class="absolute top-4 left-4">
                             <span
@@ -202,7 +251,7 @@
                     <div class="flex flex-col mb-4">
                         <div class="flex items-center gap-3 flex-wrap">
                             <span class="text-2xl lg:text-3xl font-black text-[#006d5b] tracking-tighter"
-                                x-text="formatRupiah(currentPrice)"></span>
+                                x-text="formatRupiah(basePrice)"></span>
                             @if($product->old_price)
                             <div class="flex items-center gap-2">
                                 <span class="text-sm text-slate-400 line-through decoration-red-500/50">Rp {{
@@ -214,9 +263,6 @@
                             </div>
                             @endif
                         </div>
-                        <p class="text-[10px] text-slate-500 font-medium mt-1.5 flex items-center gap-1">
-                            <i class="ti ti-shield-check text-green-500"></i> Harga kompetitif & Terjamin
-                        </p>
                     </div>
 
                     <hr class="my-4 border-slate-100">
@@ -253,29 +299,29 @@
                     </div>
                     @endif
 
-                    <div class="flex items-center gap-3 lg:gap-4">
+                    <div class="flex flex-col md:flex-row gap-4">
                         <div
-                            class="flex items-center border border-slate-200 rounded-xl p-1 bg-white/50 backdrop-blur-sm shadow-sm shrink-0">
+                            class="flex items-center border border-slate-200 rounded-xl p-1 bg-white/50 backdrop-blur-sm shadow-sm shrink-0 w-fit">
                             <button @click="if(qty > 1) qty--"
-                                class="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center hover:bg-slate-100 rounded-lg transition"><i
-                                    class="ti ti-minus text-xs lg:text-base"></i></button>
-                            <span class="w-8 text-center font-black text-sm lg:text-base" x-text="qty"></span>
+                                class="w-10 h-10 flex items-center justify-center hover:bg-slate-100 rounded-lg transition"><i
+                                    class="ti ti-minus"></i></button>
+                            <span class="w-10 text-center font-black" x-text="qty"></span>
                             <button @click="qty++"
-                                class="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center hover:bg-slate-100 rounded-lg transition"><i
-                                    class="ti ti-plus text-xs lg:text-base"></i></button>
+                                class="w-10 h-10 flex items-center justify-center hover:bg-slate-100 rounded-lg transition"><i
+                                    class="ti ti-plus"></i></button>
                         </div>
 
-                        <form action="{{ route('checkout.index') }}" method="GET" class="flex-1">
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="hidden" name="qty" :value="qty">
-                            <input type="hidden" name="variant_1" :value="selectedV1">
-                            <input type="hidden" name="variant_2" :value="selectedV2">
-                            <button type="submit"
-                                :disabled="@if($product->variant_1_name) !selectedV1 @endif @if($product->variant_2_name) || !selectedV2 @endif"
-                                class="w-full btn-primary-teal h-10 lg:h-12 rounded-xl font-black text-[10px] lg:text-xs uppercase tracking-widest shadow-lg shadow-[#006d5b]/20 flex items-center justify-center disabled:opacity-50 disabled:grayscale">
-                                <i class="ti ti-shopping-cart-plus me-2 text-sm lg:text-base"></i> Checkout Sekarang
+                        <div class="flex flex-1 gap-3">
+                            <button type="button" @click="addToCart(false)"
+                                class="flex-1 bg-white border-2 border-[#006d5b] text-[#006d5b] h-12 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#006d5b] hover:text-white transition duration-300 shadow-sm">
+                                <i class="ti ti-shopping-cart me-2"></i> + Keranjang
                             </button>
-                        </form>
+
+                            <button type="button" @click="addToCart(true)"
+                                class="flex-1 btn-primary-teal h-12 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl shadow-[#006d5b]/20">
+                                Beli Sekarang
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -284,7 +330,7 @@
                         class="p-4 bg-white/60 backdrop-blur-sm rounded-[20px] border border-white shadow-sm flex items-center gap-3">
                         <div
                             class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="ti ti-scale-outline ti-sm"></i>
+                            <i class="ti ti-scaleti-sm"></i>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Weight</span>
@@ -312,9 +358,9 @@
                         </h4>
                         <div class="h-px flex-1 bg-slate-200"></div>
                     </div>
-                    <div class="bg-white/40 backdrop-blur-sm p-5 lg:p-6 rounded-[24px] border border-white shadow-sm">
+                    <div class="bg-white/40 backdrop-blur-sm p-6 rounded-[24px] border border-white shadow-sm">
                         <p
-                            class="text-slate-600 text-[13px] lg:text-[14px] leading-relaxed whitespace-pre-wrap font-medium">
+                            class="text-slate-600 text-[14px] leading-relaxed whitespace-pre-wrap font-medium">
                             {{ $product->description ?? 'Tidak ada deskripsi untuk produk ini.' }}
                         </p>
                     </div>
@@ -340,19 +386,13 @@
                         @endphp
                         <img src="{{ $rSrc }}"
                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute bottom-3 left-3">
-                            <span
-                                class="bg-white/90 backdrop-blur-sm text-[8px] font-black uppercase px-2 py-1 rounded-md shadow-sm">{{
-                                $rel->category->name }}</span>
-                        </div>
                     </div>
                     <div class="p-5">
                         <h4 class="text-[11px] font-bold uppercase truncate mb-1.5 text-slate-700">{{ $rel->name }}</h4>
                         <div class="flex items-center justify-between">
                             <span class="text-[#006d5b] font-black text-sm">Rp {{ number_format($rel->price, 0, ',',
                                 '.') }}</span>
-                            <i
-                                class="ti ti-chevron-right text-slate-300 group-hover:text-[#006d5b] text-sm transition"></i>
+                            <i class="ti ti-chevron-right text-slate-300 group-hover:text-[#006d5b] text-sm transition"></i>
                         </div>
                     </div>
                 </a>
@@ -363,21 +403,12 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-white pt-16 pb-8 mt-16">
+    <footer class="bg-slate-900 text-white pt-16 pb-8 mt-16 text-center lg:text-left">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-xl font-black">
                 <span class="text-[#006d5b]">TOKO</span><span>KITA</span>
             </div>
             <p class="text-slate-500 text-[9px] font-black uppercase tracking-[0.3em]">Premium Shopping Experience</p>
-            <div class="flex gap-5">
-                <i class="ti ti-brand-instagram text-lg text-slate-400 hover:text-white cursor-pointer transition"></i>
-                <i class="ti ti-brand-facebook text-lg text-slate-400 hover:text-white cursor-pointer transition"></i>
-                <i class="ti ti-brand-whatsapp text-lg text-slate-400 hover:text-white cursor-pointer transition"></i>
-            </div>
-        </div>
-        <div class="max-w-6xl mx-auto px-4 mt-10 pt-6 border-t border-white/5 text-center">
-            <p class="text-slate-600 text-[9px] font-bold uppercase tracking-widest">© 2026 Toko Kita Premium
-                E-commerce. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -388,6 +419,9 @@
             class="absolute right-20 bg-white text-slate-800 text-[10px] font-bold px-4 py-2 rounded-xl shadow-xl opacity-0 group-hover:opacity-100 transition whitespace-nowrap hidden lg:block border">Chat
             Customer Service</span>
     </a>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @include('layouts.bottom-nav')
 </body>

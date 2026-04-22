@@ -70,6 +70,11 @@
             <div data-i18n="Webhook Logs">Webhook Logs</div>
           </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('admin.couriers.index') ? 'active' : '' }}">
+          <a href="{{ route('admin.couriers.index') }}" class="menu-link">
+            <div data-i18n="Manajemen Kurir">Manajemen Kurir</div>
+          </a>
+        </li>
       </ul>
     </li>
 

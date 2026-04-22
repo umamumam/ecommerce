@@ -95,8 +95,8 @@
             // Edit Category
             $(document).on('click', '.edit-category', function() {
                 const id = $(this).data('id');
-                $.get(`/categories/${id}`, function(cat) {
-                    $('#editCategoryForm').attr('action', `/categories/${id}`);
+                $.get(`/admin/categories/${id}`, function(cat) {
+                    $('#editCategoryForm').attr('action', `/admin/categories/${id}`);
                     $('#edit_name').val(cat.name);
                     $('#edit_description').val(cat.description);
                     $('#edit_status').val(cat.is_active ? 1 : 0);
@@ -115,7 +115,7 @@
             $(document).on('click', '.delete-category', function() {
                 const id = $(this).data('id');
                 const form = $('#deleteCategoryForm');
-                form.attr('action', `/categories/${id}`);
+                form.attr('action', `/admin/categories/${id}`);
                 
                 Swal.fire({
                     title: "Apakah anda yakin?",

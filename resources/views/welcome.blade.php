@@ -88,12 +88,15 @@
                         @endauth
                         <span class="text-[9px] font-bold uppercase mt-1">Akun</span>
                     </a>
-                    <a href="#"
+                    <a href="{{ route('cart.index') }}"
                         class="flex flex-col items-center text-slate-700 hover:text-[#006d5b] transition relative group">
                         <i class="ti ti-shopping-cart ti-sm group-hover:scale-110 transition"></i>
                         <span class="text-[9px] font-bold uppercase mt-1">Cart</span>
+                        @if(count(session('cart', [])) > 0)
                         <span
-                            class="absolute -top-1.5 -right-2 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border-2 border-white font-black">2</span>
+                            class="absolute -top-1.5 -right-2 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border-2 border-white font-black animate-bounce">{{
+                            count(session('cart', [])) }}</span>
+                        @endif
                     </a>
                 </div>
                 @auth
@@ -122,12 +125,15 @@
                     @endauth
                     <span class="text-[8px] font-bold uppercase mt-0.5">Akun</span>
                 </a>
-                <div class="relative flex flex-col items-center text-slate-800">
+                <a href="{{ route('cart.index') }}" class="relative flex flex-col items-center text-slate-800">
                     <i class="ti ti-shopping-cart text-xl"></i>
                     <span class="text-[8px] font-bold uppercase">Cart</span>
+                    @if(count(session('cart', [])) > 0)
                     <span
-                        class="absolute -top-1 -right-2 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-white font-bold">2</span>
-                </div>
+                        class="absolute -top-1 -right-2 bg-[#f53003] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-white font-bold">{{
+                        count(session('cart', [])) }}</span>
+                    @endif
+                </a>
             </div>
         </div>
         <div class="relative">
@@ -348,7 +354,7 @@
                             <button class="action-btn">
                                 <i class="ti ti-eye ti-xs"></i>
                             </button>
-                            <button class="action-btn">
+                            <button class="action-btn" @click.prevent="quickAdd({{ $prod->id }})">
                                 <i class="ti ti-shopping-cart ti-xs"></i>
                             </button>
                         </div>
@@ -567,6 +573,34 @@
                     }, 1000);
                 }
             }
+        }
+        function quickAdd(productId) {
+            fetch('{{ route('cart.add') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    qty: 1
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
         }
     </script>
 

@@ -101,9 +101,13 @@
                                             ID: {{ $loc['id'] }}
                                         </div>
                                         @if(env('BITESHIP_ORIGIN_ID') != $loc['id'])
-                                        <button class="text-[9px] font-black uppercase text-indigo-600 hover:text-indigo-400 transition-colors tracking-widest underline underline-offset-4">
-                                            Set Default
-                                        </button>
+                                        <form action="{{ route('admin.integration.updateOrigin') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="origin_id" value="{{ $loc['id'] }}">
+                                            <button type="submit" class="text-[9px] font-black uppercase text-indigo-600 hover:text-indigo-400 transition-colors tracking-widest underline underline-offset-4">
+                                                Set Default
+                                            </button>
+                                        </form>
                                         @endif
                                     </div>
                                 </div>

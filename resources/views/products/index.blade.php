@@ -273,8 +273,8 @@
             // Edit Product
             $(document).on('click', '.edit-product', function() {
                 const id = $(this).data('id');
-                $.get(`/products/${id}`, function(prod) {
-                    $('#editProductForm').attr('action', `/products/${id}`);
+                $.get(`/admin/products/${id}`, function(prod) {
+                    $('#editProductForm').attr('action', `/admin/products/${id}`);
                     $('#edit_name').val(prod.name);
                     $('#edit_category_id').val(prod.category_id);
                     $('#edit_price').val(prod.price);
@@ -317,7 +317,7 @@
             $(document).on('click', '.delete-product', function() {
                 const id = $(this).data('id');
                 const form = $('#deleteProductForm');
-                form.attr('action', `/products/${id}`);
+                form.attr('action', `/admin/products/${id}`);
                 
                 Swal.fire({
                     title: "Hapus produk ini?",

@@ -43,10 +43,13 @@ class BiteshipService
     public function getRates($originAreaId, $destinationAreaId, $items)
     {
         try {
+            $activeCouriers = \App\Models\Courier::where('is_active', true)->pluck('code')->toArray();
+            $courierCodes = count($activeCouriers) > 0 ? implode(',', $activeCouriers) : 'jne,jnt,sicepat';
+
             $payload = [
                 'origin_area_id' => $originAreaId,
                 'destination_area_id' => $destinationAreaId,
-                'couriers' => 'jne,jnt,sicepat,anteraja,tiki,pos,posindonesia,lion',
+                'couriers' => $courierCodes,
                 'items' => $items,
             ];
 
