@@ -108,9 +108,16 @@
             <div class="p-5 flex gap-4 {{ !$loop->last ? 'border-b border-slate-50' : '' }}">
                 <div class="w-16 h-16 rounded bg-slate-50 border shrink-0">
                     @php
-                    $img = $detail->product->image ? (Str::startsWith($detail->product->image, 'http') ?
-                    $detail->product->image : asset('storage/'.$detail->product->image)) :
-                    asset('assets/img/elements/1.jpg');
+                    $img = asset('assets/img/elements/1.jpg');
+                    if ($detail->product->image) {
+                    $img = Str::startsWith($detail->product->image, 'http') ?
+                    $detail->product->image : asset('storage/'.$detail->product->image);
+                    } elseif ($detail->product->images && is_array($detail->product->images) &&
+                    count($detail->product->images) > 0) {
+                    $firstImg = $detail->product->images[0];
+                    $img = Str::startsWith($firstImg, 'http') ?
+                    $firstImg : asset('storage/'.$firstImg);
+                    }
                     @endphp
                     <img src="{{ $img }}" class="w-full h-full object-cover">
                 </div>

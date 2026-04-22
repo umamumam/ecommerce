@@ -1,176 +1,191 @@
 <x-app-layout>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4">
-            <span class="text-muted fw-light">Order /</span> Detail #{{ $order->code }}
-        </h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold py-3 mb-0">
+                <span class="text-muted fw-light">Pesanan /</span> Rincian #{{ $order->code }}
+            </h4>
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary">
+                <i class="ti ti-arrow-left me-1"></i> KEMBALI
+            </a>
+        </div>
 
         <div class="row">
-            <!-- Order Info & Items -->
-            <div class="col-xl-8 col-lg-7 col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Rincian Produk</h5>
-                        <span class="badge bg-label-{{ $order->status == 'pending' ? 'warning' : ($order->status == 'cancelled' ? 'secondary' : 'success') }}">
-                            {{ strtoupper($order->status) }}
-                        </span>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table border-top">
-                                <thead>
-                                    <tr>
-                                        <th>Produk</th>
-                                        <th>Harga</th>
-                                        <th>Qty</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($order->details as $detail)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex justify-content-start align-items-center">
-                                                <div class="avatar-wrapper">
-                                                    <div class="avatar me-2">
-                                                        <img src="{{ $detail->product->image ? (Str::startsWith($detail->product->image, 'http') ? $detail->product->image : asset('storage/'.$detail->product->image)) : asset('assets/img/elements/1.jpg') }}" alt="Avatar" class="rounded-circle">
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex flex-column">
-                                                    <span class="text-body text-truncate fw-semibold">{{ $detail->product->name }}</span>
-                                                    <small class="text-muted">{{ $detail->variant_2 ?: 'Standard' }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>Rp{{ number_format($detail->price, 0, ',', '.') }}</td>
-                                        <td>{{ $detail->quantity }}</td>
-                                        <td class="fw-bold">Rp{{ number_format($detail->price * $detail->quantity, 0, ',', '.') }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+            <!-- Left Column: Details & Items -->
+            <div class="col-lg-8">
+                <!-- Status Timeline Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h5 class="card-title mb-0 fw-bold">Alur Pesanan</h5>
+                            @php
+                                $statusBadge = [
+                                    'pending' => 'bg-label-warning',
+                                    'paid' => 'bg-label-success',
+                                    'processing' => 'bg-label-info',
+                                    'shipping' => 'bg-label-primary',
+                                    'completed' => 'bg-label-success'
+                                ][$order->status] ?? 'bg-label-secondary';
+                            @endphp
+                            <span class="badge {{ $statusBadge }} rounded-pill px-3">{{ strtoupper($order->status) }}</span>
                         </div>
-                        
-                        <div class="d-flex justify-content-end align-items-center mt-3">
-                            <div class="order-calculations">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="w-px-150 text-heading">Subtotal:</span>
-                                    <h6 class="mb-0">Rp{{ number_format($order->total_price, 0, ',', '.') }}</h6>
+                        <div class="d-flex justify-content-between position-relative mt-4">
+                            <!-- Progress Line -->
+                            <div class="position-absolute top-50 start-0 translate-middle-y w-100 bg-light" style="height: 2px; z-index: 0;"></div>
+                            
+                            @foreach(['pending', 'paid', 'processing', 'shipping', 'completed'] as $st)
+                                @php
+                                    $isDone = (array_search($order->status, ['pending', 'paid', 'processing', 'shipping', 'completed']) >= array_search($st, ['pending', 'paid', 'processing', 'shipping', 'completed']));
+                                    $icon = [
+                                        'pending' => 'ti-shopping-cart',
+                                        'paid' => 'ti-wallet',
+                                        'processing' => 'ti-package',
+                                        'shipping' => 'ti-truck',
+                                        'completed' => 'ti-check'
+                                    ][$st];
+                                @endphp
+                                <div class="text-center position-relative" style="z-index: 1;">
+                                    <div class="avatar avatar-md mx-auto mb-2 {{ $isDone ? 'bg-primary shadow-sm' : 'bg-light' }}">
+                                        <span class="avatar-initial rounded-circle {{ $isDone ? 'text-white' : 'text-muted' }}">
+                                            <i class="ti {{ $icon }}"></i>
+                                        </span>
+                                    </div>
+                                    <small class="fw-bold d-block text-uppercase" style="font-size: 9px">{{ $st }}</small>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="w-px-150 text-heading">Shipping:</span>
-                                    <h6 class="mb-0">Rp{{ number_format($order->shipping_price, 0, ',', '.') }}</h6>
-                                </div>
-                                <div class="d-flex justify-content-between border-top pt-2">
-                                    <h6 class="w-px-150 mb-0">Total:</h6>
-                                    <h5 class="mb-0 text-primary">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</h5>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
-                <!-- Shipping Tracking -->
-                @if($order->status == 'shipping' || $order->status == 'completed' || $order->biteship_order_id)
-                <div class="card mb-4 mt-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Pengiriman & Pelacakan</h5>
+                <!-- Product Items Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="card-title mb-0 fw-bold">Item Terbeli</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-1 text-muted">Ekspedisi:</p>
-                                <h6 class="mb-3">{{ strtoupper($order->shipping_courier) }} ({{ $order->shipping_service }})</h6>
-                                
-                                <p class="mb-1 text-muted">No. Resi:</p>
-                                <div class="d-flex align-items-center gap-2">
-                                    <h6 class="mb-0 fw-bold">{{ $order->shipping_waybill ?: 'Sedang diproses' }}</h6>
-                                    @if($order->shipping_waybill)
-                                    <button class="btn btn-sm btn-outline-primary py-0" onclick="navigator.clipboard.writeText('{{ $order->shipping_waybill }}')">COPY</button>
-                                    <a href="{{ route('admin.orders.label', $order->id) }}" target="_blank" class="btn btn-sm btn-outline-info py-0">
-                                        <i class="ti ti-printer me-1"></i> CETAK RESI
-                                    </a>
-                                    @if($order->biteship_tracking_link)
-                                    <a href="{{ $order->biteship_tracking_link }}" target="_blank" class="btn btn-sm btn-outline-success py-0">
-                                        <i class="ti ti-track me-1"></i> LACAK PAKET
-                                    </a>
-                                    @endif
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-1 text-muted">Biteship Order ID:</p>
-                                <small class="font-mono text-muted">{{ $order->biteship_order_id }}</small>
-                            </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <tbody class="table-border-bottom-0">
+                                @foreach($order->details as $item)
+                                <tr>
+                                    <td width="80" class="ps-4">
+                                        @php
+                                            $img = asset('assets/img/elements/1.jpg');
+                                            if ($item->product->image) {
+                                                $img = Str::startsWith($item->product->image, 'http') ? $item->product->image : asset('storage/'.$item->product->image);
+                                            } elseif ($item->product->images && is_array($item->product->images) && count($item->product->images) > 0) {
+                                                $firstImg = $item->product->images[0];
+                                                $img = Str::startsWith($firstImg, 'http') ? $firstImg : asset('storage/'.$firstImg);
+                                            }
+                                        @endphp
+                                        <div class="avatar avatar-lg">
+                                            <img src="{{ $img }}" class="rounded shadow-sm">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-dark d-block mb-1">{{ $item->product->name }}</span>
+                                        <small class="text-muted">Varian: {{ $item->variant_2 ?: 'Standard' }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">x{{ $item->quantity }}</span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <span class="fw-bold">Rp{{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Billing Information Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Ringkasan Pembayaran</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal Produk</span>
+                            <span class="fw-medium">Rp{{ number_format($order->total_price, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Ongkos Kirim</span>
+                            <span class="fw-medium">Rp{{ number_format($order->shipping_price, 0, ',', '.') }}</span>
+                        </div>
+                        <hr class="my-3 opacity-50">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Total Tagihan</h5>
+                            <h4 class="fw-bold mb-0 text-primary">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</h4>
                         </div>
                     </div>
                 </div>
-                @endif
             </div>
 
-            <!-- Customer & Action -->
-            <div class="col-xl-4 col-lg-5 col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Detail Pelanggan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-start align-items-center mb-4">
-                            <div class="avatar me-2">
-                                <img src="{{ $order->user->profile_photo ? asset('storage/'.$order->user->profile_photo) : asset('assets/img/avatars/1.png') }}" alt="Avatar" class="rounded-circle">
+            <!-- Right Column: Customer & Shipping -->
+            <div class="col-lg-4">
+                <!-- Customer Info -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-uppercase small text-muted mb-3">Informasi Pelanggan</h6>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="avatar avatar-md me-3">
+                                <span class="avatar-initial rounded-circle bg-label-primary">{{ substr($order->user->name, 0, 1) }}</span>
                             </div>
-                            <div class="d-flex flex-column">
-                                <h6 class="mb-0">{{ $order->user->name }}</h6>
-                                <small class="text-muted">Customer ID: #{{ $order->user_id }}</small>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ $order->user->name }}</h6>
+                                <small class="text-muted">{{ $order->user->email ?? 'no-email@store.com' }}</small>
                             </div>
                         </div>
-                        
-                        <div class="d-flex justify-content-start align-items-center mb-4">
-                            <span class="avatar rounded-circle bg-label-success me-2 flex-shrink-0"><i class="ti ti-mail ti-sm"></i></span>
-                            <h6 class="mb-0">{{ $order->user->email }}</h6>
-                        </div>
-                        <div class="d-flex justify-content-start align-items-center">
-                            <span class="avatar rounded-circle bg-label-success me-2 flex-shrink-0"><i class="ti ti-phone ti-sm"></i></span>
-                            <h6 class="mb-0">{{ $order->shipping_phone }}</h6>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h6 class="mb-3 tracking-tighter text-muted text-uppercase small">Alamat Pengiriman</h6>
-                        <p class="mb-0">{{ $order->shipping_name }}</p>
-                        <p class="text-muted mb-0">{{ $order->shipping_address }}</p>
-                        <p class="text-muted">Kodepos: {{ $order->shipping_postal_code }}</p>
+                        <p class="small text-muted mb-0"><i class="ti ti-phone me-1"></i> {{ $order->user->phone ?? 'Tidak ada telepon' }}</p>
                     </div>
                 </div>
 
-                <!-- Admin Action Card -->
-                <div class="card border-primary border shadow-none">
-                    <div class="card-header bg-primary py-3">
-                        <h6 class="text-white mb-0">Admin Action</h6>
-                    </div>
-                    <div class="card-body pt-4">
-                        @if($order->status == 'paid')
+                <!-- Logistics Info -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold text-uppercase small text-muted mb-0">Pengiriman</h6>
+                            <span class="badge bg-label-info">{{ strtoupper($order->shipping_courier) }}</span>
+                        </div>
+                        <div class="bg-light p-3 rounded-3 mb-3 border-dashed border-info">
+                            <small class="text-muted d-block mb-1">Nomor Resi</small>
+                            <h5 class="fw-bold mb-0 font-mono">{{ $order->shipping_waybill ?: 'Belum Ada' }}</h5>
+                        </div>
                         <div class="mb-3">
-                            <p class="small text-muted mb-2">Buat pengiriman ke Biteship untuk mendapatkan kurir.</p>
+                            <small class="text-muted d-block mb-1 text-uppercase" style="font-size: 10px">Alamat Penerima</small>
+                            <p class="small fw-medium mb-1">{{ $order->shipping_name }}</p>
+                            <p class="small text-muted mb-0">{{ $order->shipping_address }}</p>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="d-grid gap-2 mt-4">
+                            @if($order->status == 'paid')
                             <form action="{{ route('admin.orders.shipment', $order->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="ti ti-truck me-1"></i> LANJUTKAN KE PENGIRIMAN
+                                <button type="submit" class="btn btn-primary w-100 py-2">
+                                    <i class="ti ti-truck-delivery me-1"></i> PROSES KIRIM SEKARANG
                                 </button>
                             </form>
+                            @endif
+
+                            @if($order->shipping_waybill)
+                            <a href="{{ route('admin.orders.label', $order->id) }}" target="_blank" class="btn btn-outline-info py-2">
+                                <i class="ti ti-printer me-1"></i> CETAK LABEL RESI
+                            </a>
+                            @if($order->biteship_tracking_link)
+                            <a href="{{ $order->biteship_tracking_link }}" target="_blank" class="btn btn-outline-success py-2">
+                                <i class="ti ti-track me-1"></i> PELACAKAN REALTIME
+                            </a>
+                            @endif
+                            @endif
                         </div>
-                        @elseif($order->status == 'pending')
-                         <div class="alert alert-warning d-flex align-items-center" role="alert">
-                            <span class="alert-icon text-warning me-2">
-                                <i class="ti ti-bell ti-xs"></i>
-                            </span>
-                            Menunggu pembayaran dari pelanggan.
+                    </div>
+                </div>
+
+                <!-- Admin Notes -->
+                <div class="card border-0 shadow-sm" style="border-radius: 15px">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-uppercase small text-muted mb-3">ID Logistik</h6>
+                        <div class="bg-light p-3 rounded-2">
+                            <code class="small text-muted">{{ $order->biteship_order_id ?: 'Order belum dipush ke Biteship' }}</code>
                         </div>
-                        @else
-                        <div class="text-center">
-                            <p class="text-muted small">Status: <strong>{{ strtoupper($order->status) }}</strong></p>
-                            <i class="ti ti-check text-success display-4"></i>
-                        </div>
-                        @endif
                     </div>
                 </div>
             </div>
