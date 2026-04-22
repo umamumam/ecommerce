@@ -26,7 +26,7 @@ class OrderController extends Controller
 
         if ($startDate && $endDate) {
             $query->whereDate('created_at', '>=', $startDate)
-                  ->whereDate('created_at', '<=', $endDate);
+                ->whereDate('created_at', '<=', $endDate);
         }
 
         // Status Filter
@@ -57,7 +57,7 @@ class OrderController extends Controller
         }
 
         $orderIds = $transactions->pluck('biteship_order_id')->toArray();
-        
+
         $response = $this->biteship->getBulkLabels($orderIds);
 
         // Logging detail untuk mencari tahu kenapa blm bisa cetak massal
@@ -77,14 +77,14 @@ class OrderController extends Controller
     public function createShipment($id)
     {
         $order = Transaction::findOrFail($id);
-        
+
         // Anti-fraud: Don't allow shipment for unpaid orders
         if ($order->status !== 'paid') {
             return back()->with('error', 'Pesanan ini belum dibayar. Tidak dapat membuat pengiriman.');
         }
         // Prepare data for Biteship
         $items = [];
-        foreach($order->details as $detail) {
+        foreach ($order->details as $detail) {
             $items[] = [
                 'name' => $detail->product->name,
                 'description' => "Order #{$order->code}",
@@ -135,17 +135,43 @@ class OrderController extends Controller
         return back()->with('error', 'Gagal membuat pengiriman: ' . ($response['error'] ?? 'Unknown Error'));
     }
 
+    // public function downloadLabel($id)
+    // {
+    //     $order = Transaction::findOrFail($id);
+
+    //     if (!$order->biteship_order_id) {
+    //         return back()->with('error', 'Pesanan ini belum didaftarkan ke pengiriman.');
+    //     }
+
+    //     $response = $this->biteship->getLabel($order->biteship_order_id);
+
+    //     \Log::info('Biteship Label Response Trace:', ['response' => $response]);
+
+    //     if (isset($response['url'])) {
+    //         return redirect($response['url']);
+    //     }
+
+    //     $message = $response['message'] ?? 'Link label belum tersedia.';
+    //     if (str_contains($message, 'successfully')) {
+    //         return back()->with('success', 'Resi sedang disiapkan oleh Biteship. Silakan klik tombol "CETAK RESI" lagi dalam 3 detik.');
+    //     }
+
+    //     return back()->with('error', 'Gagal mengambil label: ' . $message);
+    // }
+
     public function downloadLabel($id)
     {
         $order = Transaction::findOrFail($id);
-        
+
         if (!$order->biteship_order_id) {
             return back()->with('error', 'Pesanan ini belum didaftarkan ke pengiriman.');
         }
 
+        // Ambil data dari Biteship
         $response = $this->biteship->getLabel($order->biteship_order_id);
 
-        \Log::info('Biteship Label Response Trace:', ['response' => $response]);
+        // TAMBAHKAN BARIS INI (Hentikan proses dan tampilkan data mentahnya ke layar)
+        dd($response);
 
         if (isset($response['url'])) {
             return redirect($response['url']);
