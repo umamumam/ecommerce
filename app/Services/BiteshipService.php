@@ -143,5 +143,26 @@ class BiteshipService
         } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
+    /**
+     * Get Bulk Shipping Labels
+     */
+    public function getBulkLabels(array $orderIds)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->apiKey,
+                'Content-Type' => 'application/json'
+            ])->post("{$this->baseUrl}/v1/orders/labels", [
+                'order_ids' => $orderIds
+            ]);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            return ['error' => true, 'message' => $response->body()];
+        } catch (\Exception $e) {
+            return ['error' => true, 'message' => $e->getMessage()];
+        }
     }
 }

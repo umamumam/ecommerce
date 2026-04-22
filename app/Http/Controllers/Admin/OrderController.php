@@ -16,16 +16,56 @@ class OrderController extends Controller
         $this->biteship = $biteship;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Transaction::with('details.product', 'user')->latest()->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+        $query = Transaction::with('details.product', 'user')->latest();
+
+        // Date Filter
+        $startDate = $request->get('start_date', now()->subMonth()->format('Y-m-d'));
+        $endDate = $request->get('end_date', now()->format('Y-m-d'));
+
+        if ($startDate && $endDate) {
+            $query->whereDate('created_at', '>=', $startDate)
+                  ->whereDate('created_at', '<=', $endDate);
+        }
+
+        // Status Filter
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(20);
+        return view('admin.orders.index', compact('orders', 'startDate', 'endDate'));
     }
 
     public function show($id)
     {
         $order = Transaction::with('details.product', 'user')->findOrFail($id);
         return view('admin.orders.show', compact('order'));
+    }
+
+    public function bulkLabel(Request $request)
+    {
+        $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json(['message' => 'Pilih pesanan terlebih dahulu'], 400);
+        }
+
+        $transactions = Transaction::whereIn('id', $ids)->whereNotNull('biteship_order_id')->get();
+        if ($transactions->isEmpty()) {
+            return response()->json(['message' => 'Pesanan terpilih belum memiliki resi Biteship'], 400);
+        }
+
+        $orderIds = $transactions->pluck('biteship_order_id')->toArray();
+        
+        // Biteship supports bulk label by sending order_ids
+        $response = $this->biteship->getBulkLabels($orderIds);
+
+        if (isset($response['url'])) {
+            return response()->json(['url' => $response['url']]);
+        }
+
+        return response()->json(['message' => 'Gagal mengambil label massal'], 500);
     }
 
     public function createShipment($id)

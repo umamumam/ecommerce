@@ -1,99 +1,223 @@
 <x-app-layout>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Manajemen /</span> Order</h4>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold py-3 mb-0">
+                <span class="text-muted fw-light">Logistik /</span> Kelola Pesanan
+            </h4>
+            <div id="bulk-actions" class="d-none animate__animated animate__fadeIn">
+                <button type="button" onclick="bulkPrint()" class="btn btn-primary shadow-sm">
+                    <i class="ti ti-printer me-1"></i> CETAK MASSAL (<span id="selected-count">0</span>)
+                </button>
+            </div>
+        </div>
 
-        <div class="card overflow-hidden">
+        <!-- Filter Card -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">DARI TANGGAL</label>
+                        <input type="date" name="start_date" class="form-control border-light" value="{{ $startDate }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">SAMPAI TANGGAL</label>
+                        <input type="date" name="end_date" class="form-control border-light" value="{{ $endDate }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">STATUS</label>
+                        <select name="status" class="form-select border-light">
+                            <option value="">Semua Status</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid (Siap Kirim)</option>
+                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Processing (Kemas)</option>
+                            <option value="shipping" {{ request('status') == 'shipping' ? 'selected' : '' }}>Shipping (Kirim)</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-info w-100"><i class="ti ti-filter me-1"></i> FILTER</button>
+                        <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary w-50">RESET</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card border-0 shadow-sm overflow-hidden">
             <div class="table-responsive text-nowrap">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Order & Customer</th>
-                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Produk</th>
-                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Total</th>
-                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Ekspedisi</th>
-                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
-                            <th class="py-3 text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">Aksi</th>
+                            <th width="40"><input class="form-check-input" type="checkbox" id="check-all"></th>
+                            <th class="small fw-bold">PESANAN</th>
+                            <th class="small fw-bold">PELANGGAN</th>
+                            <th class="small fw-bold">LOKASI</th>
+                            <th class="small fw-bold">TOTAL</th>
+                            <th class="small fw-bold">STATUS</th>
+                            <th class="small fw-bold text-center">AKSI</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                         @forelse($orders as $order)
                         <tr>
-                            <td class="ps-4 py-4">
+                            <td>
+                                <input class="form-check-input order-checkbox" type="checkbox" value="{{ $order->id }}">
+                            </td>
+                            <td>
                                 <div class="d-flex flex-column">
-                                    <span class="text-xs font-black text-slate-900 leading-none mb-1">{{ $order->code }}</span>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ $order->user->name }}</span>
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="fw-bold text-primary mb-0">#{{ $order->code }}</a>
+                                    <small class="text-muted">{{ $order->created_at->format('d M Y, H:i') }}</small>
                                 </div>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    @php $firstDetail = $order->details->first(); @endphp
-                                    @if($firstDetail)
-                                    <div class="w-10 h-10 rounded border p-1 bg-white me-2">
-                                        <img src="{{ $firstDetail->product->image ? (Str::startsWith($firstDetail->product->image, 'http') ? $firstDetail->product->image : asset('storage/'.$firstDetail->product->image)) : asset('assets/img/elements/1.jpg') }}" class="w-full h-full object-cover rounded">
+                                    <div class="avatar avatar-sm me-2">
+                                        <span class="avatar-initial rounded-circle bg-label-secondary text-uppercase">{{ substr($order->user->name, 0, 1) }}</span>
                                     </div>
                                     <div class="d-flex flex-column">
-                                        <span class="text-[11px] font-bold text-slate-700 line-clamp-1" style="max-width: 140px;">{{ $firstDetail->product->name }}</span>
-                                        @if($order->details->count() > 1)
-                                        <span class="text-[9px] text-primary font-black uppercase">+{{ $order->details->count() - 1 }} Item Lainnya</span>
-                                        @endif
+                                        <span class="fw-medium small">{{ $order->user->name }}</span>
+                                        <small class="text-muted" style="font-size: 10px">{{ $order->user->email }}</small>
                                     </div>
-                                    @endif
                                 </div>
-                            </td>
-                            <td>
-                                <div class="text-xs font-black text-slate-800">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</div>
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
-                                    <span class="text-[10px] font-bold text-slate-600 uppercase">{{ $order->shipping_courier }}</span>
-                                    <span class="text-[9px] text-slate-400 font-medium uppercase tracking-tight">{{ $order->shipping_service }}</span>
+                                    <span class="small">{{ $order->shipping_city ?: 'Data Lokasi' }}</span>
+                                    <span class="badge bg-label-info p-1" style="font-size: 9px; width: fit-content">{{ strtoupper($order->shipping_courier) }}</span>
                                 </div>
                             </td>
                             <td>
+                                <span class="fw-bold text-dark small">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</span>
+                            </td>
+                            <td>
                                 @php
-                                    $class = match($order->status) {
+                                    $statusClass = [
                                         'pending' => 'bg-label-warning',
                                         'paid' => 'bg-label-success',
                                         'processing' => 'bg-label-info',
                                         'shipping' => 'bg-label-primary',
-                                        'completed' => 'bg-label-emerald',
-                                        default => 'bg-label-secondary'
-                                    };
+                                        'completed' => 'bg-label-success',
+                                        'cancelled' => 'bg-label-danger'
+                                    ][$order->status] ?? 'bg-label-secondary';
                                 @endphp
-                                <span class="badge {{ $class }} text-[9px] font-black uppercase px-2 py-1.5 rounded">
-                                    {{ $order->status }}
-                                </span>
+                                <span class="badge {{ $statusClass }} rounded-pill" style="font-size: 10px">{{ strtoupper($order->status) }}</span>
                             </td>
-                            <td class="text-center pe-4">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-icon btn-sm btn-label-primary shadow-none">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
-                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-icon btn-sm btn-label-danger shadow-none">
-                                            <i class="ti ti-trash"></i>
-                                        </button>
-                                    </form>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-menu-item d-flex align-items-center py-2 px-3" href="{{ route('admin.orders.show', $order->id) }}">
+                                            <i class="ti ti-eye me-2 text-info"></i> DETAIL
+                                        </a>
+                                        @if($order->status == 'paid')
+                                        <form action="{{ route('admin.orders.shipment', $order->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item d-flex align-items-center py-2 px-3">
+                                                <i class="ti ti-truck me-2 text-primary"></i> PROSES KIRIM
+                                            </button>
+                                        </form>
+                                        @endif
+                                        @if($order->shipping_waybill)
+                                        <a class="dropdown-menu-item d-flex align-items-center py-2 px-3" href="{{ route('admin.orders.label', $order->id) }}" target="_blank">
+                                            <i class="ti ti-printer me-2 text-info"></i> CETAK RESI
+                                        </a>
+                                        @endif
+                                        <div class="dropdown-divider"></div>
+                                        <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus pesanan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item d-flex align-items-center py-2 px-3 text-danger">
+                                                <i class="ti ti-trash me-2"></i> HAPUS
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5">
-                                <div class="py-5 text-center">
-                                    <i class="ti ti-receipt-off display-2 text-slate-200"></i>
-                                    <h6 class="mt-3 text-slate-400">Belum ada pesanan yang masuk</h6>
-                                </div>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="ti ti-package-off display-4 text-muted mb-3 d-block"></i>
+                                <h6 class="text-muted">Tidak ada pesanan ditemukan</h6>
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="p-4 border-t">
-                {{ $orders->links() }}
+            <div class="card-footer bg-white border-top py-3">
+                {{ $orders->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
+
+    <!-- Scripts for Bulk Action -->
+    @push('scripts')
+    <script>
+        const checkAll = document.getElementById('check-all');
+        const checkboxes = document.querySelectorAll('.order-checkbox');
+        const bulkAction = document.getElementById('bulk-actions');
+        const selectedCount = document.getElementById('selected-count');
+
+        function updateBulkStats() {
+            const checkedCount = document.querySelectorAll('.order-checkbox:checked').length;
+            selectedCount.textContent = checkedCount;
+            if (checkedCount > 0) {
+                bulkAction.classList.remove('d-none');
+            } else {
+                bulkAction.classList.add('d-none');
+            }
+        }
+
+        checkAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => {
+                cb.checked = checkAll.checked;
+            });
+            updateBulkStats();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkStats);
+        });
+
+        function bulkPrint() {
+            const selectedIds = Array.from(document.querySelectorAll('.order-checkbox:checked')).map(cb => cb.value);
+            
+            if (selectedIds.length === 0) return;
+
+            Swal.fire({
+                title: 'Sedang memproses...',
+                text: 'Mohon tunggu sebentar sementara kami menyiapkan label massal Anda.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('{{ route("admin.orders.bulkLabel") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ ids: selectedIds })
+            })
+            .then(res => res.json())
+            .then(data => {
+                Swal.close();
+                if (data.url) {
+                    window.open(data.url, '_blank');
+                } else {
+                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan sistem', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.close();
+                Swal.fire('Error', 'Gagal menghubungi server', 'error');
+            });
+        }
+    </script>
+    @endpush
 </x-app-layout>
