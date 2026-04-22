@@ -135,7 +135,7 @@
                         <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Cari Kecamatan /
                             Kota</label>
                         <div class="relative">
-                            <input type="text" x-model="areaSearch" @input.debounce.500ms="searchArea()"
+                            <input type="text" x-model="areaSearch" @input.debounce.500ms="searchAreaAction()"
                                 placeholder="Ketik minimal 3 huruf..." class="input-shopee">
                             <i class="ti ti-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
@@ -343,14 +343,14 @@
 
                 init() {
                     if (this.areaSearch.length >= 3) {
-                        this.searchArea();
+                        this.searchAreaAction();
                     }
                 },
 
-                async searchArea() {
+                async searchAreaAction() {
                     if (this.areaSearch.length < 3) return;
                     try {
-                        const res = await fetch(`/shipping/areas?q=${this.areaSearch}`);
+                        const res = await fetch(`{{ url('/shipping/areas') }}?q=${encodeURIComponent(this.areaSearch)}`);
                         const data = await res.json();
                         this.areaResults = data.areas || [];
                     } catch (e) {
@@ -362,28 +362,23 @@
                     this.selectedArea = area;
                     this.areaResults = [];
                     this.areaSearch = area.name + (area.postcode ? ' (' + area.postcode + ')' : '');
-                    this.fetchRates();
+                    this.getRates();
                 },
 
-                async fetchRates() {
+                async getRates() {
                     if (!this.selectedArea) return;
                     this.loadingRates = true;
                     this.selectedRate = null;
                     
-                    const items = [
-                        @foreach($cart as $item)
-                        {
-                            name: '{{ $item['name'] }}',
-                            description: 'E-commerce Item',
-                            value: {{ $item['price'] }},
-                            weight: {{ $item['weight'] }},
-                            quantity: {{ $item['quantity'] }}
-                        },
-                        @endforeach
-                    ];
+                    const items = @json($cart).map(i => ({
+                        name: i.name,
+                        value: i.price,
+                        weight: i.weight,
+                        quantity: i.quantity
+                    }));
 
                     try {
-                        const res = await fetch('/shipping/rates', {
+                        const res = await fetch('{{ url('/shipping/rates') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
