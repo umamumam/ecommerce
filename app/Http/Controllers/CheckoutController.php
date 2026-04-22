@@ -43,6 +43,9 @@ class CheckoutController extends Controller
             return redirect('/')->with('error', 'Keranjang belanja kosong');
         }
 
+        // Force cart to be a sequential array for JavaScript compatibility
+        $cart = array_values($cart);
+
         $user = Auth::user();
         $initialAddress = $user->address;
         $initialPostal = $user->postal_code;
