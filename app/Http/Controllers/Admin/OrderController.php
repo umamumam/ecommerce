@@ -88,6 +88,23 @@ class OrderController extends Controller
         return back()->with('error', 'Gagal membuat pengiriman: ' . ($response['error'] ?? 'Unknown Error'));
     }
 
+    public function downloadLabel($id)
+    {
+        $order = Transaction::findOrFail($id);
+        
+        if (!$order->biteship_order_id) {
+            return back()->with('error', 'Pesanan ini belum didaftarkan ke pengiriman.');
+        }
+
+        $response = $this->biteship->getLabel($order->biteship_order_id);
+
+        if (isset($response['url'])) {
+            return redirect($response['url']);
+        }
+
+        return back()->with('error', 'Gagal mengambil label: ' . ($response['message'] ?? 'Unknown error'));
+    }
+
     public function destroy($id)
     {
         $order = Transaction::findOrFail($id);

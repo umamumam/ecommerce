@@ -125,4 +125,23 @@ class BiteshipService
             return null;
         }
     }
+    /**
+     * Get Shipping Label
+     */
+    public function getLabel($orderId)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->apiKey
+            ])->get("{$this->baseUrl}/v1/orders/{$orderId}/label");
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            return ['error' => true, 'message' => $response->body()];
+        } catch (\Exception $e) {
+            return ['error' => true, 'message' => $e->getMessage()];
+        }
+    }
 }

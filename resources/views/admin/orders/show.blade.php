@@ -86,6 +86,9 @@
                                     <h6 class="mb-0 fw-bold">{{ $order->shipping_waybill ?: 'Sedang diproses' }}</h6>
                                     @if($order->shipping_waybill)
                                     <button class="btn btn-sm btn-outline-primary py-0" onclick="navigator.clipboard.writeText('{{ $order->shipping_waybill }}')">COPY</button>
+                                    <a href="{{ route('admin.orders.label', $order->id) }}" target="_blank" class="btn btn-sm btn-outline-info py-0">
+                                        <i class="ti ti-printer me-1"></i> CETAK RESI
+                                    </a>
                                     @endif
                                 </div>
                             </div>

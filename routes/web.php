@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::delete('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{id}/shipment', [\App\Http\Controllers\Admin\OrderController::class, 'createShipment'])->name('admin.orders.shipment');
+    Route::get('/orders/{id}/label', [\App\Http\Controllers\Admin\OrderController::class, 'downloadLabel'])->name('admin.orders.label');
 
     // Logistics Tools
     Route::get('/tools/ongkir', [\App\Http\Controllers\Admin\ToolController::class, 'indexOngkir'])->name('admin.tools.ongkir');
