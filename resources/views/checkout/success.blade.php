@@ -52,8 +52,8 @@
         </div>
 
         <div class="flex flex-col gap-4 w-full">
-            @if($transaction->status === 'pending' && $transaction->payment_link)
-            <a href="{{ $transaction->payment_link }}" class="w-full h-16 bg-[#006d5b] text-white rounded-2xl flex items-center justify-center gap-3 font-black text-sm uppercase tracking-widest hover:bg-[#005647] transition shadow-xl shadow-[#006d5b]/20">
+            @if($transaction->status === 'pending' && $transaction->payment_url)
+            <a href="{{ $transaction->payment_url }}" class="w-full h-16 bg-[#006d5b] text-white rounded-2xl flex items-center justify-center gap-3 font-black text-sm uppercase tracking-widest hover:bg-[#005647] transition shadow-xl shadow-[#006d5b]/20">
                 <i class="ti ti-credit-card text-xl"></i>
                 Pay Securely Now
             </a>

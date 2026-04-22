@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -12,7 +13,7 @@ class XenditService
 
     public function __construct()
     {
-        $this->secretKey = config('services.xendit.key');
+        $this->secretKey = trim(config('services.xendit.key'));
     }
 
     /**
@@ -46,9 +47,11 @@ class XenditService
                 'external_id' => $transaction->code,
                 'amount' => (int) $transaction->grand_total,
                 'description' => 'Pembayaran Pesanan #' . $transaction->code,
-                'customer' => [
+                'payer_email' => $transaction->shipping_email ?? (Auth::user()->email ?? 'customer@mail.com'),
+                'customer_details' => [
                     'given_names' => $transaction->shipping_name,
                     'mobile_number' => $transaction->shipping_phone ?? '+628123456789',
+                    'email' => $transaction->shipping_email ?? (Auth::user()->email ?? 'customer@mail.com'),
                 ],
                 'items' => $items,
                 'success_redirect_url' => route('checkout.success', $transaction->id),
@@ -56,18 +59,21 @@ class XenditService
                 'currency' => 'IDR',
             ];
 
-            Log::info('Xendit Create Invoice Payload', $payload);
+            Log::info('Xendit Create Invoice Payload (V2)', $payload);
 
             $response = Http::withHeaders([
                 'Authorization' => 'Basic ' . base64_encode($this->secretKey . ':')
-            ])->post("{$this->baseUrl}/v1/invoices", $payload);
+            ])->post("{$this->baseUrl}/v2/invoices", $payload);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
-            Log::error('Xendit API Error: ' . $response->body());
-            return null;
+            $errorBody = $response->json();
+            $errorMessage = $errorBody['message'] ?? $response->body();
+            
+            Log::error('Xendit API Error: ' . $errorMessage);
+            return ['error' => true, 'message' => $errorMessage];
         } catch (\Exception $e) {
             Log::error('Xendit Service Error: ' . $e->getMessage());
             return null;

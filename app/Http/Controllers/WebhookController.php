@@ -80,6 +80,12 @@ class WebhookController extends Controller
         $callbackToken = $request->header('x-callback-token');
         $storedToken = config('services.xendit.callback_token');
 
+        Log::info('Xendit Webhook received', [
+            'header_token' => $callbackToken,
+            'stored_token' => $storedToken,
+            'payload' => $request->all()
+        ]);
+
         if ($storedToken && $callbackToken !== $storedToken) {
             Log::warning("Xendit Webhook called with invalid token.");
             return response()->json(['message' => 'invalid token'], 403);
@@ -102,6 +108,7 @@ class WebhookController extends Controller
             if ($externalId && $status === 'PAID') {
                 $transaction = Transaction::where('code', $externalId)->first();
                 if ($transaction) {
+                    Log::info('Transaction found, updating to PAID', ['code' => $externalId]);
                     $transaction->update(['status' => 'paid']);
                     $log->update(['status' => 'processed']);
                     

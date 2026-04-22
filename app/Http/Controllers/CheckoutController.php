@@ -122,6 +122,7 @@ class CheckoutController extends Controller
                 'shipping_area_id' => $request->shipping_area_id,
                 'shipping_address' => $request->shipping_address,
                 'shipping_postal_code' => $request->shipping_postal_code,
+                'shipping_email' => $request->shipping_email, // Simpan email ke database
                 'shipping_name' => $request->shipping_name ?? Auth::user()->name,
                 'shipping_phone' => $request->shipping_phone ?? (Auth::user()->phone ?? '08123456789'),
             ]);
@@ -143,20 +144,21 @@ class CheckoutController extends Controller
                 }
             }
 
-            // Clear Cart
-            session()->forget('cart');
-
             // Create Xendit Invoice
             try {
                 $invoice = $this->xendit->createInvoice($transaction);
                 
-                if (!$invoice || !isset($invoice['invoice_url'])) {
-                    throw new \Exception('Gagal membuat invoice Xendit. Mohon cek API Key Anda atau log sistem.');
+                if (!$invoice || isset($invoice['error'])) {
+                    $errorMsg = $invoice['message'] ?? 'Gagal membuat invoice Xendit. Mohon cek API Key Anda atau log sistem.';
+                    throw new \Exception($errorMsg);
                 }
 
                 $transaction->update([
-                    'payment_link' => $invoice['invoice_url']
+                    'payment_url' => $invoice['invoice_url']
                 ]);
+
+                // Clear Cart
+                session()->forget('cart');
 
                 // Redirect DIRECTLY to Xendit payment page
                 return redirect($invoice['invoice_url']);

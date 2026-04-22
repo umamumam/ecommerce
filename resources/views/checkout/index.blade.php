@@ -132,6 +132,12 @@
                     </div>
 
                     <div class="mb-6">
+                        <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Email</label>
+                        <input type="email" x-model="recipientEmail" placeholder="email@contoh.com"
+                            class="input-shopee">
+                    </div>
+
+                    <div class="mb-6">
                         <label class="text-[11px] font-medium text-slate-400 uppercase mb-2 block">Cari Kecamatan /
                             Kota</label>
                         <div class="relative">
@@ -301,6 +307,7 @@
                             @csrf
                             <input type="hidden" name="shipping_name" :value="recipientName">
                             <input type="hidden" name="shipping_phone" :value="recipientPhone">
+                            <input type="hidden" name="shipping_email" :value="recipientEmail">
                             <input type="hidden" name="shipping_area_id" :value="selectedArea?.id">
                             <input type="hidden" name="shipping_address" :value="addressDetail">
                             <input type="hidden" name="shipping_courier" :value="selectedRate?.courier_code">
@@ -309,7 +316,7 @@
                             <input type="hidden" name="shipping_postal_code" :value="selectedArea?.postcode">
 
                                 <button type="submit"
-                                    :disabled="!selectedRate || !addressDetail || !recipientName || !recipientPhone || loadingRates"
+                                    :disabled="!selectedRate || !addressDetail || !recipientName || !recipientPhone || !recipientEmail || loadingRates"
                                     class="w-full py-4 bg-[#006d5b] text-white rounded-sm text-sm font-bold tracking-widest disabled:bg-slate-300 disabled:cursor-not-allowed hidden lg:block shadow-md">
                                     BUAT PESANAN
                                 </button>
@@ -322,12 +329,32 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#006d5b'
+            });
+        @endif
+
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#006d5b'
+            });
+        @endif
+    </script>
 
     <script>
         function checkoutPage() {
             return {
-                recipientName: '{{ auth()->check() ? auth()->user()->name : "" }}',
-                recipientPhone: '{{ auth()->check() ? (auth()->user()->phone ?? "") : "" }}',
+                recipientName: '{{ $user->name }}',
+                recipientPhone: '{{ $user->phone ?? '' }}',
+                recipientEmail: '{{ $user->email ?? '' }}',
                 areaSearch: '{{ $initialPostal ?: ($initialLocationName ?: "") }}',
                 areaResults: [],
                 selectedArea: null,
