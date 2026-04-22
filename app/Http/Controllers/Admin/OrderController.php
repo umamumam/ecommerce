@@ -98,6 +98,8 @@ class OrderController extends Controller
 
         $response = $this->biteship->getLabel($order->biteship_order_id);
 
+        \Log::info('Biteship Label Response Trace:', ['response' => $response]);
+
         if (isset($response['url'])) {
             return redirect($response['url']);
         }
