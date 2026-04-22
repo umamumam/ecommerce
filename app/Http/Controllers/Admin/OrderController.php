@@ -80,7 +80,8 @@ class OrderController extends Controller
             $order->update([
                 'biteship_order_id' => $response['id'],
                 'status' => 'processing',
-                'shipping_waybill' => $response['courier']['waybill_id'] ?? null
+                'shipping_waybill' => $response['courier']['waybill_id'] ?? null,
+                'biteship_tracking_link' => $response['courier']['link'] ?? null
             ]);
             return back()->with('success', 'Berhasil membuat pengiriman di Biteship.');
         }

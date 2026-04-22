@@ -89,6 +89,11 @@
                                     <a href="{{ route('admin.orders.label', $order->id) }}" target="_blank" class="btn btn-sm btn-outline-info py-0">
                                         <i class="ti ti-printer me-1"></i> CETAK RESI
                                     </a>
+                                    @if($order->biteship_tracking_link)
+                                    <a href="{{ $order->biteship_tracking_link }}" target="_blank" class="btn btn-sm btn-outline-success py-0">
+                                        <i class="ti ti-track me-1"></i> LACAK PAKET
+                                    </a>
+                                    @endif
                                     @endif
                                 </div>
                             </div>
