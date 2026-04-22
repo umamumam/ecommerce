@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Services\BiteshipService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -183,6 +184,16 @@ class OrderController extends Controller
 
     //     return back()->with('error', 'Gagal mengambil label: ' . $message);
     // }
+
+    public function printInternal($id)
+    {
+        $order = Transaction::with('details.product', 'user')->findOrFail($id);
+        
+        $pdf = Pdf::loadView('admin.orders.print_thermal', compact('order'))
+                  ->setPaper([0, 0, 283.46, 425.20], 'portrait'); // 100mm x 150mm in points
+        
+        return $pdf->stream('label-' . $order->code . '.pdf');
+    }
 
     public function downloadLabel($id)
     {

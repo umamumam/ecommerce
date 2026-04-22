@@ -284,6 +284,10 @@
                                 class="btn btn-outline-dark py-2 rounded-pill fw-bold">
                                 <i class="ti ti-printer me-2"></i> CETAK LABEL RESI
                             </a>
+                            <a href="{{ route('admin.orders.printInternal', $order->id) }}" target="_blank"
+                                class="btn btn-outline-primary py-2 rounded-pill fw-bold">
+                                <i class="ti ti-printer me-2"></i> CETAK INTERNAL (A6)
+                            </a>
                             @if($order->biteship_tracking_link)
                             <a href="{{ $order->biteship_tracking_link }}" target="_blank"
                                 class="btn btn-success py-2 rounded-pill fw-bold">
