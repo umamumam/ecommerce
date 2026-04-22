@@ -48,7 +48,7 @@ class OrderController extends Controller
             ];
         }
 
-        $originId = \App\Models\Setting::where('key', 'biteship_origin_id')->first()?->value ?? env('BITESHIP_ORIGIN_ID', 'IDNP3CL1044');
+        $originId = \App\Models\Setting::where('key', 'biteship_origin_id')->first()?->value ?? config('services.biteship.origin_id', 'IDNP3CL1044');
         $originLabel = \App\Models\Setting::where('key', 'biteship_origin_label')->first()?->value ?? 'Gudang Utama';
 
         $shipmentData = [
@@ -80,7 +80,7 @@ class OrderController extends Controller
             $order->update([
                 'biteship_order_id' => $response['id'],
                 'status' => 'processing',
-                'waybill' => $response['courier']['waybill_id'] ?? null
+                'shipping_waybill' => $response['courier']['waybill_id'] ?? null
             ]);
             return back()->with('success', 'Berhasil membuat pengiriman di Biteship.');
         }
