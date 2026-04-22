@@ -1,17 +1,105 @@
 <x-app-layout>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="mb-6">
             <h4 class="py-3 mb-0">
                 <span class="text-muted fw-light">Manajemen /</span> User Management
             </h4>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <i class="ti ti-plus me-1"></i> Add New User
-            </button>
+        </div>
+
+        <!-- User Statistics Widgets -->
+        <div class="row g-6 mb-6">
+            <div class="col-sm-6 col-xl-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="content-left">
+                                <span class="text-heading">Total Users</span>
+                                <div class="d-flex align-items-center my-1">
+                                    <h4 class="mb-0 me-2">{{ $users->count() }}</h4>
+                                    <span class="text-success">(+18%)</span>
+                                </div>
+                                <small class="mb-0">Total Pelanggan & Staff</small>
+                            </div>
+                            <div class="avatar">
+                                <span class="avatar-initial rounded bg-label-primary">
+                                    <i class="ti ti-users ti-md"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="content-left">
+                                <span class="text-heading">User Aktif</span>
+                                <div class="d-flex align-items-center my-1">
+                                    <h4 class="mb-0 me-2">{{ $users->where('is_active', true)->count() }}</h4>
+                                    <span class="text-success">(+5%)</span>
+                                </div>
+                                <small class="mb-0">Sedang Terdaftar</small>
+                            </div>
+                            <div class="avatar">
+                                <span class="avatar-initial rounded bg-label-success">
+                                    <i class="ti ti-user-check ti-md"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="content-left">
+                                <span class="text-heading">Administrator</span>
+                                <div class="d-flex align-items-center my-1">
+                                    <h4 class="mb-0 me-2">{{ $admins->count() }}</h4>
+                                    <span class="text-danger">(-2%)</span>
+                                </div>
+                                <small class="mb-0">Staff Pengelola</small>
+                            </div>
+                            <div class="avatar">
+                                <span class="avatar-initial rounded bg-label-warning">
+                                    <i class="ti ti-shield-check ti-md"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="content-left">
+                                <span class="text-heading">Total Customer</span>
+                                <div class="d-flex align-items-center my-1">
+                                    <h4 class="mb-0 me-2">{{ $customers->count() }}</h4>
+                                    <span class="text-success">(+12%)</span>
+                                </div>
+                                <small class="mb-0">Pelanggan Aktif</small>
+                            </div>
+                            <div class="avatar">
+                                <span class="avatar-initial rounded bg-label-info">
+                                    <i class="ti ti-shopping-cart ti-md"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="card">
-            <div class="card-header border-bottom">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <h5 class="card-title mb-0">List Pengguna</h5>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <i class="ti ti-plus me-1"></i> Add New User
+                </button>
             </div>
 
             <div class="card-body pt-4">
@@ -89,11 +177,11 @@
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <button class="btn btn-sm btn-icon edit-user" data-id="{{ $u->id }}"><i
-                                                        class="ti ti-edit"></i></button>
-                                                <button class="btn btn-sm btn-icon delete-user"
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light edit-user" data-id="{{ $u->id }}"><i
+                                                        class="ti ti-edit ti-md"></i></button>
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light delete-user"
                                                     data-id="{{ $u->id }}"><i
-                                                        class="ti ti-trash text-danger"></i></button>
+                                                        class="ti ti-trash ti-md text-danger"></i></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -140,11 +228,11 @@
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <button class="btn btn-sm btn-icon edit-user" data-id="{{ $u->id }}"><i
-                                                        class="ti ti-edit"></i></button>
-                                                <button class="btn btn-sm btn-icon delete-user"
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light edit-user" data-id="{{ $u->id }}"><i
+                                                        class="ti ti-edit ti-md"></i></button>
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light delete-user"
                                                     data-id="{{ $u->id }}"><i
-                                                        class="ti ti-trash text-danger"></i></button>
+                                                        class="ti ti-trash ti-md text-danger"></i></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -184,12 +272,12 @@
                                         <td>{{ $u->phone ?? '-' }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <button class="btn btn-sm btn-icon edit-user" data-id="{{ $u->id }}"><i
-                                                        class="ti ti-edit"></i></button>
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light edit-user" data-id="{{ $u->id }}"><i
+                                                        class="ti ti-edit ti-md"></i></button>
                                                 @if($u->id != Auth::id())
-                                                <button class="btn btn-sm btn-icon delete-user"
+                                                <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill waves-effect waves-light delete-user"
                                                     data-id="{{ $u->id }}"><i
-                                                        class="ti ti-trash text-danger"></i></button>
+                                                        class="ti ti-trash ti-md text-danger"></i></button>
                                                 @endif
                                             </div>
                                         </td>
@@ -218,7 +306,15 @@
         $(document).ready(function() {
             $('.datatables-users').DataTable({
                 order: [[0, 'desc']],
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                dom:
+                    '<"card-header d-flex border-top rounded-0 flex-wrap py-0 flex-column flex-md-row align-items-center"' +
+                    '<"me-auto"l>' +
+                    '<"d-flex justify-content-start justify-content-md-end align-items-baseline"<"dt-action-buttons d-flex flex-column align-items-start align-items-sm-center justify-content-sm-center pt-0 gap-sm-4 gap-sm-0 flex-sm-row"f>>' +
+                    '>t' +
+                    '<"row"' +
+                    '<"col-sm-12 col-md-6"i>' +
+                    '<"col-sm-12 col-md-6"p>' +
+                    '>',
                 language: {
                     search: "",
                     searchPlaceholder: "Search User..."

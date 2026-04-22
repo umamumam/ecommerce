@@ -35,6 +35,51 @@
       </a>
     </li>
 
+    <li class="menu-header small">
+      <span class="menu-header-text" data-i18n="Sistem">Sistem</span>
+    </li>
+    <li class="menu-item {{ request()->is('admin/orders*') ? 'active' : '' }}">
+      <a href="{{ route('admin.orders.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
+        <div data-i18n="Manajemen Order">Manajemen Order</div>
+      </a>
+    </li>
+    <li class="menu-item {{ request()->is('admin/tools*') ? 'active open' : '' }}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons ti ti-truck"></i>
+        <div data-i18n="Layanan Paket">Layanan Paket</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('admin.tools.ongkir') ? 'active' : '' }}">
+          <a href="{{ route('admin.tools.ongkir') }}" class="menu-link">
+            <div data-i18n="Cek Ongkir">Cek Ongkir</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('admin.tools.resi') ? 'active' : '' }}">
+          <a href="{{ route('admin.tools.resi') }}" class="menu-link">
+            <div data-i18n="Cek Resi">Cek Resi</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('admin.tools.scan') ? 'active' : '' }}">
+          <a href="{{ route('admin.tools.scan') }}" class="menu-link">
+            <div data-i18n="Scan Out Station">Scan Out Station</div>
+          </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('admin.tools.webhooks') ? 'active' : '' }}">
+          <a href="{{ route('admin.tools.webhooks') }}" class="menu-link">
+            <div data-i18n="Webhook Logs">Webhook Logs</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="menu-item {{ request()->routeIs('products.index') ? 'active' : '' }}">
+      <a href="{{ route('products.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-box"></i>
+        <div data-i18n="Daftar Produk">Daftar Produk</div>
+      </a>
+    </li>
+
     <!-- Management -->
     <li class="menu-header small">
       <span class="menu-header-text" data-i18n="Manajemen">Manajemen</span>
@@ -45,70 +90,26 @@
         <div data-i18n="User Management">User Management</div>
       </a>
     </li>
-
-    <!-- Icons -->
-    <li class="menu-item">
-      <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons ti ti-brand-tabler"></i>
-        <div data-i18n="Icons">Icons</div>
+    <li class="menu-item {{ request()->routeIs('categories.index') ? 'active' : '' }}">
+      <a href="{{ route('categories.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-category"></i>
+        <div data-i18n="Kategori Produk">Kategori Produk</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="icons-tabler.html" class="menu-link">
-            <div data-i18n="Tabler">Tabler</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="icons-font-awesome.html" class="menu-link">
-            <div data-i18n="Fontawesome">Fontawesome</div>
-          </a>
-        </li>
-      </ul>
     </li>
-
-    <!-- Charts & Maps -->
+    <!-- Development -->
     <li class="menu-header small">
-      <span class="menu-header-text" data-i18n="Charts & Maps">Charts &amp; Maps</span>
+      <span class="menu-header-text" data-i18n="Development">Development</span>
     </li>
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons ti ti-chart-pie"></i>
-        <div data-i18n="Charts">Charts</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="charts-apex.html" class="menu-link">
-            <div data-i18n="Apex Charts">Apex Charts</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="charts-chartjs.html" class="menu-link">
-            <div data-i18n="ChartJS">ChartJS</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    <li class="menu-item">
-      <a href="maps-leaflet.html" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-map"></i>
-        <div data-i18n="Leaflet Maps">Leaflet Maps</div>
+    <li class="menu-item {{ request()->routeIs('admin.integration.index') ? 'active' : '' }}">
+      <a href="{{ route('admin.integration.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-settings-automation"></i>
+        <div data-i18n="Integrasi API">Integrasi API</div>
       </a>
     </li>
-
-    <!-- Misc -->
-    <li class="menu-header small">
-      <span class="menu-header-text" data-i18n="Misc">Misc</span>
-    </li>
-    <li class="menu-item">
-      <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-lifebuoy"></i>
-        <div data-i18n="Support">Support</div>
-      </a>
-    </li>
-    <li class="menu-item">
-      <a href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/" target="_blank" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-file-description"></i>
-        <div data-i18n="Documentation">Documentation</div>
+    <li class="menu-item {{ request()->routeIs('admin.xendit.index') ? 'active' : '' }}">
+      <a href="{{ route('admin.xendit.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-credit-card"></i>
+        <div data-i18n="API Xendit">API Xendit</div>
       </a>
     </li>
   </ul>
