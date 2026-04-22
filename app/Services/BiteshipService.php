@@ -12,7 +12,7 @@ class BiteshipService
 
     public function __construct()
     {
-        $this->apiKey = env('BITESHIP_API_KEY');
+        $this->apiKey = config('services.biteship.key');
         $this->baseUrl = 'https://api.biteship.com';
     }
 

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'biteship' => [
+        'key' => env('BITESHIP_API_KEY'),
+    ],
+
+    'xendit' => [
+        'key' => env('XENDIT_SECRET_KEY'),
+    ],
+
 ];

@@ -12,7 +12,7 @@ class XenditService
 
     public function __construct()
     {
-        $this->secretKey = env('XENDIT_SECRET_KEY');
+        $this->secretKey = config('services.xendit.key');
     }
 
     /**
