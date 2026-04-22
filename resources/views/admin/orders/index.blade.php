@@ -1,13 +1,30 @@
 <x-app-layout>
+    <!-- Import SweetAlert2 for beautiful alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">Logistik /</span> Kelola Pesanan
             </h4>
             <div id="bulk-actions" class="d-none animate__animated animate__fadeIn">
-                <button type="button" onclick="bulkPrint()" class="btn btn-primary shadow-sm">
-                    <i class="ti ti-printer me-1"></i> CETAK MASSAL (<span id="selected-count">0</span>)
-                </button>
+                <div class="btn-group shadow-sm">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ti ti-layout-grid me-1"></i> AKSI CEPAT (<span id="selected-count">0</span>)
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" onclick="bulkPrint()">
+                                <i class="ti ti-printer me-2 text-primary"></i> Cetak Label Massal
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center text-muted" href="javascript:void(0);">
+                                <i class="ti ti-box me-2"></i> Kemas Pesanan (Coming Soon)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

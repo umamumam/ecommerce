@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class CourierController extends Controller
 {
+    protected $biteship;
+
+    public function __construct(\App\Services\BiteshipService $biteship)
+    {
+        $this->biteship = $biteship;
+    }
+
     public function index()
     {
         $couriers = \App\Models\Courier::all();
@@ -15,6 +22,26 @@ class CourierController extends Controller
         $originLabel = \App\Models\Setting::where('key', 'biteship_origin_label')->first()?->value;
         
         return view('admin.couriers.index', compact('couriers', 'originId', 'originLabel'));
+    }
+
+    public function sync()
+    {
+        $response = $this->biteship->getCouriers();
+        
+        if (isset($response['couriers'])) {
+            foreach ($response['couriers'] as $item) {
+                \App\Models\Courier::updateOrCreate(
+                    ['code' => $item['courier_code']],
+                    [
+                        'name' => $item['courier_name'] ?? strtoupper($item['courier_code']),
+                        'description' => $item['courier_description'] ?? ''
+                    ]
+                );
+            }
+            return back()->with('success', 'Daftar kurir berhasil disinkronkan dengan Biteship.');
+        }
+
+        return back()->with('error', 'Gagal menyambung ke Biteship. Periksa API Key Anda.');
     }
 
     public function updateBiteshipSettings(Request $request)

@@ -20,8 +20,8 @@ class OrderController extends Controller
     {
         $query = Transaction::with('details.product', 'user')->latest();
 
-        // Date Filter
-        $startDate = $request->get('start_date', now()->subMonth()->format('Y-m-d'));
+        // Date Filter - Default to 1st of current month
+        $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->format('Y-m-d'));
 
         if ($startDate && $endDate) {
@@ -53,19 +53,25 @@ class OrderController extends Controller
 
         $transactions = Transaction::whereIn('id', $ids)->whereNotNull('biteship_order_id')->get();
         if ($transactions->isEmpty()) {
-            return response()->json(['message' => 'Pesanan terpilih belum memiliki resi Biteship'], 400);
+            return response()->json(['message' => 'Pesanan terpilih belum memiliki resi Biteship (Kirim barang dulu)'], 400);
         }
 
         $orderIds = $transactions->pluck('biteship_order_id')->toArray();
         
-        // Biteship supports bulk label by sending order_ids
         $response = $this->biteship->getBulkLabels($orderIds);
+
+        // Logging detail untuk mencari tahu kenapa blm bisa cetak massal
+        \Log::info('Biteship Bulk Label Response:', [
+            'ids_sent' => $orderIds,
+            'response' => $response
+        ]);
 
         if (isset($response['url'])) {
             return response()->json(['url' => $response['url']]);
         }
 
-        return response()->json(['message' => 'Gagal mengambil label massal'], 500);
+        $msg = $response['message'] ?? 'Gagal mengambil label massal (Limit Sandbox)';
+        return response()->json(['message' => $msg], 500);
     }
 
     public function createShipment($id)

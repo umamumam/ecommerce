@@ -2,9 +2,17 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="flex items-center justify-between py-3 mb-4">
             <h4 class="fw-bold m-0"><span class="text-muted fw-light">Pengaturan /</span> Manajemen Kurir</h4>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourierModal">
-                <i class="ti ti-plus me-1"></i> Tambah Kurir
-            </button>
+            <div class="d-flex gap-2">
+                <form action="{{ route('admin.couriers.sync') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-primary border-2">
+                        <i class="ti ti-refresh me-1"></i> Sinkronkan dengan Biteship
+                    </button>
+                </form>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourierModal">
+                    <i class="ti ti-plus me-1"></i> Tambah Kurir
+                </button>
+            </div>
         </div>
 
         <div class="card">

@@ -70,22 +70,25 @@ class IntegrationController extends Controller
     public function updateOrigin(Request $request)
     {
         $request->validate([
-            'origin_id' => 'required',
-            'origin_label' => 'nullable',
+            'biteship_origin_id' => 'required',
         ]);
 
         \App\Models\Setting::updateOrCreate(
             ['key' => 'biteship_origin_id'],
-            ['value' => $request->origin_id]
+            ['value' => $request->biteship_origin_id]
         );
-
-        if ($request->origin_label) {
-            \App\Models\Setting::updateOrCreate(
-                ['key' => 'biteship_origin_label'],
-                ['value' => $request->origin_label]
-            );
-        }
         
         return back()->with('success', 'Lokasi Asal (Origin) berhasil diperbarui.');
+    }
+
+    public function searchArea(Request $request)
+    {
+        $query = $request->get('q');
+        if (strlen($query) < 3) {
+            return response()->json([]);
+        }
+
+        $response = $this->biteship->searchArea($query);
+        return response()->json($response['areas'] ?? []);
     }
 }

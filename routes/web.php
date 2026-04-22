@@ -30,12 +30,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::resource('products', ProductController::class);
     
     // Order Management
+    Route::post('/orders/bulk-label', [\App\Http\Controllers\Admin\OrderController::class, 'bulkLabel'])->name('admin.orders.bulkLabel');
     Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
     Route::delete('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{id}/shipment', [\App\Http\Controllers\Admin\OrderController::class, 'createShipment'])->name('admin.orders.shipment');
     Route::get('/orders/{id}/label', [\App\Http\Controllers\Admin\OrderController::class, 'downloadLabel'])->name('admin.orders.label');
-    Route::post('/orders/bulk-label', [\App\Http\Controllers\Admin\OrderController::class, 'bulkLabel'])->name('admin.orders.bulkLabel');
 
     // Logistics Tools
     Route::get('/tools/ongkir', [\App\Http\Controllers\Admin\ToolController::class, 'indexOngkir'])->name('admin.tools.ongkir');
@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/integration', [\App\Http\Controllers\Admin\IntegrationController::class, 'index'])->name('admin.integration.index');
     Route::post('/integration/origin', [\App\Http\Controllers\Admin\IntegrationController::class, 'updateOrigin'])->name('admin.integration.updateOrigin');
     Route::post('/integration/keys', [\App\Http\Controllers\Admin\IntegrationController::class, 'updateApiKeys'])->name('admin.integration.updateKeys');
+    Route::get('/integration/search-area', [\App\Http\Controllers\Admin\IntegrationController::class, 'searchArea'])->name('admin.integration.searchArea');
 
     // Xendit
     Route::get('/xendit', [\App\Http\Controllers\Admin\XenditController::class, 'index'])->name('admin.xendit.index');
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     // Courier Management
     Route::get('/couriers', [\App\Http\Controllers\Admin\CourierController::class, 'index'])->name('admin.couriers.index');
     Route::post('/couriers', [\App\Http\Controllers\Admin\CourierController::class, 'store'])->name('admin.couriers.store');
+    Route::post('/couriers/sync', [\App\Http\Controllers\Admin\CourierController::class, 'sync'])->name('admin.couriers.sync');
     Route::post('/couriers/{id}/toggle', [\App\Http\Controllers\Admin\CourierController::class, 'toggle']);
 });
 

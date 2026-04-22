@@ -167,4 +167,21 @@ class BiteshipService
             return ['error' => true, 'message' => $e->getMessage()];
         }
     }
+
+    /**
+     * Get list of all couriers from Biteship
+     */
+    public function getCouriers()
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->apiKey,
+            ])->get("{$this->baseUrl}/v1/couriers");
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Biteship getCouriers Error: ' . $e->getMessage());
+            return null;
+        }
+    }
 }
