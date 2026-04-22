@@ -102,7 +102,12 @@ class OrderController extends Controller
             return redirect($response['url']);
         }
 
-        return back()->with('error', 'Gagal mengambil label: ' . ($response['message'] ?? 'Unknown error'));
+        $message = $response['message'] ?? 'Link label belum tersedia.';
+        if (str_contains($message, 'successfully')) {
+            return back()->with('success', 'Resi sedang disiapkan oleh Biteship. Silakan klik tombol "CETAK RESI" lagi dalam 3 detik.');
+        }
+
+        return back()->with('error', 'Gagal mengambil label: ' . $message);
     }
 
     public function destroy($id)
