@@ -12,7 +12,8 @@ class BiteshipService
 
     public function __construct()
     {
-        $this->apiKey = \App\Models\Setting::where('key', 'biteship_api_key')->first()?->value ?? env('BITESHIP_API_KEY');
+        $dbKey = \App\Models\Setting::where('key', 'biteship_api_key')->first()?->value;
+        $this->apiKey = (!empty($dbKey)) ? $dbKey : env('BITESHIP_API_KEY');
         $this->baseUrl = 'https://api.biteship.com';
     }
 
