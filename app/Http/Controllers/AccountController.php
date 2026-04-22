@@ -11,7 +11,38 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return view('account.index');
+        $user = Auth::user();
+        $counts = [
+            'pending' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'pending')->count(),
+            'paid' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'paid')->count(),
+            'shipping' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'shipping')->count(),
+        ];
+        
+        return view('account.index', compact('counts'));
+    }
+
+    public function orders(Request $request)
+    {
+        $status = $request->status;
+        $query = \App\Models\Transaction::where('user_id', Auth::id())
+            ->with(['details.product'])
+            ->latest();
+        
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $transactions = $query->get();
+        return view('account.orders', compact('transactions', 'status'));
+    }
+
+    public function orderShow($id)
+    {
+        $transaction = \App\Models\Transaction::where('user_id', Auth::id())
+            ->with(['details.product'])
+            ->findOrFail($id);
+            
+        return view('account.order_detail', compact('transaction'));
     }
 
     public function profile()

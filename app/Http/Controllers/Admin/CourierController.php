@@ -10,8 +10,31 @@ class CourierController extends Controller
 {
     public function index()
     {
-        $couriers = Courier::all();
-        return view('admin.couriers.index', compact('couriers'));
+        $couriers = \App\Models\Courier::all();
+        $originId = \App\Models\Setting::where('key', 'biteship_origin_id')->first()?->value;
+        $originLabel = \App\Models\Setting::where('key', 'biteship_origin_label')->first()?->value;
+        
+        return view('admin.couriers.index', compact('couriers', 'originId', 'originLabel'));
+    }
+
+    public function updateBiteshipSettings(Request $request)
+    {
+        $request->validate([
+            'origin_area_id' => 'required',
+            'origin_label' => 'required',
+        ]);
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'biteship_origin_id'],
+            ['value' => $request->origin_area_id]
+        );
+
+        \App\Models\Setting::updateOrCreate(
+            ['key' => 'biteship_origin_label'],
+            ['value' => $request->origin_label]
+        );
+
+        return response()->json(['success' => true, 'message' => 'Lokasi penjemputan berhasil diperbarui']);
     }
 
     public function toggle(Request $request, $id)

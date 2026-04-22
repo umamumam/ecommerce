@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     Route::get('/integration', [\App\Http\Controllers\Admin\IntegrationController::class, 'index'])->name('admin.integration.index');
     Route::post('/integration/origin', [\App\Http\Controllers\Admin\IntegrationController::class, 'updateOrigin'])->name('admin.integration.updateOrigin');
+    Route::post('/integration/keys', [\App\Http\Controllers\Admin\IntegrationController::class, 'updateApiKeys'])->name('admin.integration.updateKeys');
 
     // Xendit
     Route::get('/xendit', [\App\Http\Controllers\Admin\XenditController::class, 'index'])->name('admin.xendit.index');
@@ -67,6 +68,8 @@ Route::middleware('auth')->group(function () {
     })->name('verification.status');
 
     Route::get('/account', [\App\Http\Controllers\AccountController::class, 'index'])->name('account');
+    Route::get('/account/orders', [\App\Http\Controllers\AccountController::class, 'orders'])->name('account.orders');
+    Route::get('/account/orders/{id}', [\App\Http\Controllers\AccountController::class, 'orderShow'])->name('account.orders.show');
     Route::get('/account/profile', [\App\Http\Controllers\AccountController::class, 'profile'])->name('account.profile');
     Route::post('/account/profile', [\App\Http\Controllers\AccountController::class, 'updateProfile'])->name('account.profile.update');
     Route::get('/account/address', [\App\Http\Controllers\AccountController::class, 'address'])->name('account.address');

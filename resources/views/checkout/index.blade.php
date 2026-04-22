@@ -198,7 +198,12 @@
                                 :class="selectedRate?.courier_service_code === rate.courier_service_code ? 'border-[#006d5b] bg-[#006d5b]/5' : 'border-slate-200 hover:border-[#006d5b]/50'">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-2">
-                                        <img :src="rate.courier_logo" class="w-6 h-6 object-contain">
+                                        <div class="w-8 h-8 flex items-center justify-center bg-white rounded border border-slate-100 overflow-hidden shrink-0">
+                                            <img :src="rate.courier_logo" 
+                                                x-on:error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='block'"
+                                                class="w-full h-full object-contain">
+                                            <i class="ti ti-truck text-slate-300 text-lg hidden"></i>
+                                        </div>
                                         <span class="text-[13px] font-medium uppercase text-slate-700"
                                             x-text="rate.courier_name"></span>
                                     </div>
@@ -213,6 +218,33 @@
                                 </div>
                             </div>
                         </template>
+                    </div>
+                </section>
+
+                <!-- Payment Method Section -->
+                <section class="bg-white p-4 md:p-6 shadow-sm border border-slate-100 mobile-flat" x-show="selectedRate"
+                    x-cloak x-transition>
+                    <div class="flex items-center gap-3 mb-6 border-b pb-3">
+                        <i class="ti ti-credit-card text-[#006d5b] text-xl"></i>
+                        <h2 class="text-base font-medium text-slate-800">Metode Pembayaran</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="p-4 border border-[#006d5b] bg-[#006d5b]/5 rounded-sm flex items-center justify-between group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-white rounded border border-slate-100 flex items-center justify-center">
+                                    <i class="ti ti-shield-check text-[#006d5b] text-xl"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-[13px] font-bold text-slate-800 uppercase">Pembayaran Instan (Otomatis)</span>
+                                    <span class="text-[10px] text-slate-500 uppercase">Transfer Bank, QRIS, E-Wallet (OVO, Dana, ShopeePay)</span>
+                                </div>
+                            </div>
+                            <i class="ti ti-circle-check-filled text-[#006d5b] text-xl"></i>
+                        </div>
+                        <p class="text-[10px] text-slate-400 italic px-2">
+                            * Pembayaran diverifikasi otomatis oleh sistem. Tidak perlu upload bukti transfer.
+                        </p>
                     </div>
                 </section>
             </div>

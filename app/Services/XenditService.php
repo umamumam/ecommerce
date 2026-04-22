@@ -12,7 +12,7 @@ class XenditService
 
     public function __construct()
     {
-        $this->secretKey = env('XENDIT_SECRET_KEY');
+        $this->secretKey = \App\Models\Setting::where('key', 'xendit_secret_key')->first()?->value ?? env('XENDIT_SECRET_KEY');
     }
 
     /**

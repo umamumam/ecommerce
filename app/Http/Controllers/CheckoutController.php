@@ -68,7 +68,7 @@ class CheckoutController extends Controller
             'items' => 'required|array',
         ]);
 
-        $originAreaId = env('BITESHIP_ORIGIN_ID', 'IDNP3CL1044'); 
+        $originAreaId = \App\Models\Setting::where('key', 'biteship_origin_id')->first()?->value ?? env('BITESHIP_ORIGIN_ID', 'IDNP3CL1044'); 
         $rates = $this->biteship->getRates($originAreaId, $request->destination_area_id, $request->items);
         
         return response()->json($rates);

@@ -1,3 +1,10 @@
+<style>
+    /* Menambahkan padding pada body agar konten tidak tertutup bottom nav */
+    @media (max-width: 1023px) {
+        body { padding-bottom: 90px !important; }
+    }
+</style>
+
 <nav class="bottom-nav lg:hidden">
     <a href="{{ url('/') }}" class="bottom-nav-item {{ Request::is('/') ? 'active' : '' }}">
         <i class="ti ti-home ti-sm mb-1"></i>
@@ -17,7 +24,7 @@
         </a>
     </div>
 
-    <a href="#" class="bottom-nav-item">
+    <a href="{{ route('account.orders') }}" class="bottom-nav-item {{ Request::is('account/orders*') ? 'active' : '' }}">
         <i class="ti ti-receipt ti-sm mb-1"></i>
         <span>Pesanan</span>
     </a>

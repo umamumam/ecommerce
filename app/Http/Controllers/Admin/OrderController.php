@@ -44,17 +44,20 @@ class OrderController extends Controller
             ];
         }
 
+        $originId = \App\Models\Setting::where('key', 'biteship_origin_id')->first()?->value ?? env('BITESHIP_ORIGIN_ID', 'IDNP3CL1044');
+        $originLabel = \App\Models\Setting::where('key', 'biteship_origin_label')->first()?->value ?? 'Gudang Utama';
+
         $shipmentData = [
-            'shipper_contact_name' => 'Owner Store',
-            'shipper_contact_phone' => '08123456789',
+            'shipper_contact_name' => config('app.name'),
+            'shipper_contact_phone' => '085799352991',
             'shipper_contact_email' => 'owner@store.com',
-            'shipper_organization' => 'Toko Kita',
-            'origin_contact_name' => 'Gudang Utama',
-            'origin_contact_phone' => '08123456789',
-            'origin_address' => 'Jl. Fashion Perkasa No. 10',
+            'shipper_organization' => config('app.name'),
+            'origin_contact_name' => $originLabel,
+            'origin_contact_phone' => '085799352991',
+            'origin_address' => 'Cluwak, Pati, Jawa Tengah',
             'origin_note' => 'Pintu Gerbang Hijau',
-            'origin_postal_code' => 12110,
-            'origin_area_id' => env('BITESHIP_ORIGIN_ID', 'IDNP3CL1044'),
+            'origin_postal_code' => 59157,
+            'origin_area_id' => $originId,
             'destination_contact_name' => $order->shipping_name,
             'destination_contact_phone' => $order->shipping_phone,
             'destination_contact_email' => 'customer@mail.com',
