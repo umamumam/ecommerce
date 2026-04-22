@@ -37,10 +37,14 @@ return [
 
     'biteship' => [
         'key' => env('BITESHIP_API_KEY'),
+        'origin_id' => env('BITESHIP_ORIGIN_ID'),
+        'webhook_url' => env('BITESHIP_WEBHOOK_URL'),
     ],
 
     'xendit' => [
         'key' => env('XENDIT_SECRET_KEY'),
+        'callback_token' => env('XENDIT_CALLBACK_TOKEN'),
+        'webhook_url' => env('XENDIT_WEBHOOK_URL'),
     ],
 
 ];
