@@ -143,6 +143,8 @@ class BiteshipService
         } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
+    }
+
     /**
      * Get Bulk Shipping Labels
      */
