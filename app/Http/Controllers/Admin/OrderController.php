@@ -135,6 +135,31 @@ class OrderController extends Controller
         return back()->with('error', 'Gagal membuat pengiriman: ' . ($response['error'] ?? 'Unknown Error'));
     }
 
+    public function syncStatus()
+    {
+        // Ambil semua transaksi yang statusnya 'shipping'
+        $orders = Transaction::where('status', 'shipping')
+            ->whereNotNull('shipping_waybill')
+            ->get();
+
+        $count = 0;
+        foreach ($orders as $order) {
+            $tracking = $this->biteship->trackOrder($order->shipping_waybill, $order->shipping_courier);
+            
+            if (isset($tracking['success']) && $tracking['success']) {
+                $latestStatus = $tracking['status'] ?? null;
+                
+                // Jika Biteship bilang delivered, update ke completed
+                if ($latestStatus === 'delivered') {
+                    $order->update(['status' => 'completed']);
+                    $count++;
+                }
+            }
+        }
+
+        return back()->with('success', "Berhasil mensinkronkan status $count pesanan.");
+    }
+
     // public function downloadLabel($id)
     // {
     //     $order = Transaction::findOrFail($id);
@@ -170,16 +195,16 @@ class OrderController extends Controller
         // Ambil data dari Biteship
         $response = $this->biteship->getLabel($order->biteship_order_id);
 
-        // TAMBAHKAN BARIS INI (Hentikan proses dan tampilkan data mentahnya ke layar)
-        dd($response);
-
         if (isset($response['url'])) {
             return redirect($response['url']);
         }
 
         $message = $response['message'] ?? 'Link label belum tersedia.';
-        if (str_contains($message, 'successfully')) {
-            return back()->with('success', 'Resi sedang disiapkan oleh Biteship. Silakan klik tombol "CETAK RESI" lagi dalam 3 detik.');
+        
+        // Logika khusus Biteship: terkadang dia butuh waktu 1-2 detik untuk generate PDF 
+        // setelah order baru saja dibuat.
+        if (isset($response['success']) && $response['success'] === true && !isset($response['url'])) {
+            return back()->with('success', 'Resi sedang disiapkan oleh Biteship. Silakan klik tombol "CETAK RESI" lagi dalam beberapa saat.');
         }
 
         return back()->with('error', 'Gagal mengambil label: ' . $message);

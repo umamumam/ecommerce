@@ -6,24 +6,33 @@
             <h4 class="fw-bold py-3 mb-0">
                 <span class="text-muted fw-light">Logistik /</span> Kelola Pesanan
             </h4>
-            <div id="bulk-actions" class="d-none animate__animated animate__fadeIn">
-                <div class="btn-group shadow-sm">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="ti ti-layout-grid me-1"></i> AKSI CEPAT (<span id="selected-count">0</span>)
+            <div class="d-flex align-items-center gap-2">
+                <form action="{{ route('admin.orders.syncStatus') }}" method="POST" id="sync-form">
+                    @csrf
+                    <button type="submit" class="btn btn-success shadow-sm rounded-pill">
+                        <i class="ti ti-refresh me-1"></i> SINKRONKAN STATUS
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" onclick="bulkPrint()">
-                                <i class="ti ti-printer me-2 text-primary"></i> Cetak Label Massal
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center text-muted" href="javascript:void(0);">
-                                <i class="ti ti-box me-2"></i> Kemas Pesanan (Coming Soon)
-                            </a>
-                        </li>
-                    </ul>
+                </form>
+                
+                <div id="bulk-actions" class="d-none animate__animated animate__fadeIn">
+                    <div class="btn-group shadow-sm">
+                        <button type="button" class="btn btn-primary dropdown-toggle rounded-pill" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-layout-grid me-1"></i> AKSI CEPAT (<span id="selected-count">0</span>)
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="javascript:void(0);" onclick="bulkPrint()">
+                                    <i class="ti ti-printer me-2 text-primary"></i> Cetak Label Massal
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center text-muted" href="javascript:void(0);">
+                                    <i class="ti ti-box me-2"></i> Kemas Pesanan (Coming Soon)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
