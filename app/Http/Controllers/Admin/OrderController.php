@@ -191,8 +191,10 @@ class OrderController extends Controller
         
         $pdf = Pdf::loadView('admin.orders.print_thermal', compact('order'))
                   ->setPaper([0, 0, 283.46, 425.20], 'portrait'); // 100mm x 150mm in points
+        // Bersihkan kode order dari karakter / atau \ agar tidak error saat jadi nama file
+        $safeName = str_replace(['/', '\\'], '-', $order->code);
         
-        return $pdf->stream('label-' . $order->code . '.pdf');
+        return $pdf->stream('label-' . $safeName . '.pdf');
     }
 
     public function downloadLabel($id)
