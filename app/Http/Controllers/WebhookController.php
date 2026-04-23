@@ -33,7 +33,9 @@ class WebhookController extends Controller
         try {
             $biteshipOrderId = $payload['order_id'] ?? null;
             $waybill_id = $payload['courier']['waybill_id'] ?? ($payload['waybill_id'] ?? null);
-            $newStatus = $payload['status'] ?? null;
+            $newStatus = isset($payload['status']) ? strtolower($payload['status']) : null;
+
+            Log::info("Processing Biteship Webhook: OrderID: $biteshipOrderId, Waybill: $waybill_id, Status: $newStatus");
 
             if (($biteshipOrderId || $waybill_id) && $newStatus) {
                 // Find transaction
@@ -49,10 +51,17 @@ class WebhookController extends Controller
                 if ($transaction) {
                     $internalStatus = $this->mapBiteshipStatus($newStatus);
                     
+                    Log::info("Mapping Biteship status '$newStatus' to internal '$internalStatus' for transaction #{$transaction->code}");
+
                     $updateData = ['status' => $internalStatus];
                     
                     if ($waybill_id && !$transaction->shipping_waybill) {
                         $updateData['shipping_waybill'] = $waybill_id;
+                    }
+                    
+                    // Update tracking link if provided in webhook (some events include it)
+                    if (isset($payload['courier']['link'])) {
+                        $updateData['biteship_tracking_link'] = $payload['courier']['link'];
                     }
 
                     $transaction->update($updateData);
@@ -60,6 +69,7 @@ class WebhookController extends Controller
                     $log->update(['status' => 'processed']);
                     return response()->json(['message' => 'webhook processed'], 200);
                 } else {
+                    Log::warning("Transaction not found for Biteship Webhook. OrderID: $biteshipOrderId, Waybill: $waybill_id");
                     $log->update([
                         'status' => 'processed',
                         'error_message' => "Transaction not found for ID: $biteshipOrderId or Waybill: $waybill_id"

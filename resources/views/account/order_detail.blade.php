@@ -57,10 +57,10 @@
                 </div>
             </div>
 
-            <div class="pl-11 border-l-2 border-slate-100 ml-4 space-y-6">
+            <div class="pl-11 border-l-2 border-slate-100 ml-4 space-y-6" id="tracking-history-container">
                 @if($tracking && isset($tracking['history']) && count($tracking['history']) > 0)
                     @foreach($tracking['history'] as $history)
-                    <div class="relative {{ !$loop->first ? 'opacity-50' : '' }}">
+                    <div class="tracking-item relative {{ $loop->first ? '' : 'hidden opacity-50' }}">
                         <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full {{ $loop->first ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
                         <p class="text-[12px] font-medium {{ $loop->first ? 'text-emerald-600' : 'text-slate-600' }}">
                             {{ $history['note'] }}
@@ -68,6 +68,13 @@
                         <p class="text-[10px] text-slate-400 mt-1">{{ \Carbon\Carbon::parse($history['updated_at'])->format('d M Y, H:i') }}</p>
                     </div>
                     @endforeach
+
+                    @if(count($tracking['history']) > 1)
+                    <button onclick="toggleTracking()" id="btn-toggle-tracking" class="text-[11px] font-bold text-slate-400 uppercase flex items-center gap-1">
+                        <span>Lihat Riwayat Lainnya</span>
+                        <i class="ti ti-chevron-down"></i>
+                    </button>
+                    @endif
                 @else
                     <div class="relative">
                         <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></div>
@@ -84,17 +91,55 @@
                     </div>
                 @endif
                 
-                @if($transaction->shipping_waybill)
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 mt-4">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] text-slate-400 font-bold uppercase">No. Resi</span>
-                        <span class="text-[12px] font-mono font-bold text-slate-700">{{ $transaction->shipping_waybill }}</span>
+                <div class="flex flex-col gap-2 mt-4">
+                    @if($transaction->shipping_waybill)
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase">No. Resi</span>
+                            <span class="text-[12px] font-mono font-bold text-slate-700">{{ $transaction->shipping_waybill }}</span>
+                        </div>
+                        <button onclick="navigator.clipboard.writeText('{{ $transaction->shipping_waybill }}')"
+                            class="text-xs font-bold text-shopee uppercase">Salin</button>
                     </div>
-                    <button onclick="navigator.clipboard.writeText('{{ $transaction->shipping_waybill }}')"
-                        class="text-xs font-bold text-shopee uppercase">Salin</button>
+                    @endif
+
+                    @if($transaction->biteship_tracking_link)
+                    <a href="{{ $transaction->biteship_tracking_link }}" target="_blank" 
+                       class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 py-3 rounded-lg border border-emerald-100 text-[12px] font-bold">
+                        <i class="ti ti-map-2"></i>
+                        LIHAT LIVE TRACKING (MAPS)
+                    </a>
+                    @endif
                 </div>
-                @endif
             </div>
+
+            <script>
+                function toggleTracking() {
+                    const items = document.querySelectorAll('.tracking-item');
+                    const btn = document.getElementById('btn-toggle-tracking');
+                    const isExpanded = btn.classList.contains('expanded');
+
+                    items.forEach((item, index) => {
+                        if (index > 0) {
+                            if (isExpanded) {
+                                item.classList.add('hidden');
+                            } else {
+                                item.classList.remove('hidden');
+                            }
+                        }
+                    });
+
+                    if (isExpanded) {
+                        btn.classList.remove('expanded');
+                        btn.querySelector('span').innerText = 'Lihat Riwayat Lainnya';
+                        btn.querySelector('i').classList.replace('ti-chevron-up', 'ti-chevron-down');
+                    } else {
+                        btn.classList.add('expanded');
+                        btn.querySelector('span').innerText = 'Sembunyikan Riwayat';
+                        btn.querySelector('i').classList.replace('ti-chevron-down', 'ti-chevron-up');
+                    }
+                }
+            </script>
         </div>
 
         <!-- Address Card -->
