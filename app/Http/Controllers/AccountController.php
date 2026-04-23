@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
+    protected $biteship;
+
+    public function __construct(\App\Services\BiteshipService $biteship)
+    {
+        $this->biteship = $biteship;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -42,7 +49,12 @@ class AccountController extends Controller
             ->with(['details.product'])
             ->findOrFail($id);
             
-        return view('account.order_detail', compact('transaction'));
+        $tracking = null;
+        if ($transaction->shipping_waybill) {
+            $tracking = $this->biteship->trackOrder($transaction->shipping_waybill, strtolower($transaction->shipping_courier));
+        }
+
+        return view('account.order_detail', compact('transaction', 'tracking'));
     }
 
     public function profile()

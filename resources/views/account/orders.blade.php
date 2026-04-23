@@ -82,7 +82,13 @@
                 <div class="p-4 flex gap-4 cursor-pointer hover:bg-slate-50 transition">
                     <div class="w-16 h-16 rounded bg-slate-50 border shrink-0">
                         @php
-                            $img = $firstDetail->product->image ? (Str::startsWith($firstDetail->product->image, 'http') ? $firstDetail->product->image : asset('storage/'.$firstDetail->product->image)) : asset('assets/img/elements/1.jpg');
+                            $img = asset('assets/img/elements/1.jpg');
+                            if ($firstDetail->product->image) {
+                                $img = Str::startsWith($firstDetail->product->image, 'http') ? $firstDetail->product->image : asset('storage/'.$firstDetail->product->image);
+                            } elseif ($firstDetail->product->images && is_array($firstDetail->product->images) && count($firstDetail->product->images) > 0) {
+                                $firstImg = $firstDetail->product->images[0];
+                                $img = Str::startsWith($firstImg, 'http') ? $firstImg : asset('storage/'.$firstImg);
+                            }
                         @endphp
                         <img src="{{ $img }}" class="w-full h-full object-cover">
                     </div>

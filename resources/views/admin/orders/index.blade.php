@@ -78,6 +78,7 @@
                             <th class="small fw-bold">PESANAN</th>
                             <th class="small fw-bold">PELANGGAN</th>
                             <th class="small fw-bold">LOKASI</th>
+                            <th class="small fw-bold">NOMOR RESI</th>
                             <th class="small fw-bold">TOTAL</th>
                             <th class="small fw-bold">STATUS</th>
                             <th class="small fw-bold text-center">AKSI</th>
@@ -111,6 +112,20 @@
                                     <span class="small">{{ $order->shipping_city ?: 'Data Lokasi' }}</span>
                                     <span class="badge bg-label-info p-1" style="font-size: 9px; width: fit-content">{{ strtoupper($order->shipping_courier) }}</span>
                                 </div>
+                            </td>
+                            <td>
+                                @if($order->shipping_waybill)
+                                <div class="d-flex flex-column">
+                                    <span class="small font-monospace fw-bold text-dark">{{ $order->shipping_waybill }}</span>
+                                    @if($order->biteship_tracking_link)
+                                    <a href="{{ $order->biteship_tracking_link }}" target="_blank" class="text-info" style="font-size: 10px">
+                                        <i class="ti ti-external-link me-1"></i>LACAK
+                                    </a>
+                                    @endif
+                                </div>
+                                @else
+                                <span class="text-muted small italic">-</span>
+                                @endif
                             </td>
                             <td>
                                 <span class="fw-bold text-dark small">Rp{{ number_format($order->grand_total, 0, ',', '.') }}</span>
@@ -164,7 +179,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <i class="ti ti-package-off display-4 text-muted mb-3 d-block"></i>
                                 <h6 class="text-muted">Tidak ada pesanan ditemukan</h6>
                             </td>

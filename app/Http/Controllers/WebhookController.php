@@ -31,36 +31,44 @@ class WebhookController extends Controller
         ]);
 
         try {
-            // Find waybill ID and new status from payload
+            $biteshipOrderId = $payload['order_id'] ?? null;
             $waybill_id = $payload['courier']['waybill_id'] ?? ($payload['waybill_id'] ?? null);
             $newStatus = $payload['status'] ?? null;
 
-            if ($waybill_id && $newStatus) {
-                // Map Biteship status to Transaction status if needed
-                // For now, we update the transaction that matches the waybill
-                $transaction = Transaction::where('waybill', $waybill_id)->first();
+            if (($biteshipOrderId || $waybill_id) && $newStatus) {
+                // Find transaction
+                $query = Transaction::query();
+                if ($biteshipOrderId) {
+                    $query->where('biteship_order_id', $biteshipOrderId);
+                } else {
+                    $query->where('shipping_waybill', $waybill_id);
+                }
+                
+                $transaction = $query->first();
 
                 if ($transaction) {
-                    $updateData = ['status' => $newStatus];
+                    $internalStatus = $this->mapBiteshipStatus($newStatus);
                     
-                    // If Biteship says 'delivered', we might want to mark as success
-                    if ($newStatus === 'delivered') {
-                        $updateData['status'] = 'success';
+                    $updateData = ['status' => $internalStatus];
+                    
+                    if ($waybill_id && !$transaction->shipping_waybill) {
+                        $updateData['shipping_waybill'] = $waybill_id;
                     }
 
                     $transaction->update($updateData);
 
                     $log->update(['status' => 'processed']);
+                    return response()->json(['message' => 'webhook processed'], 200);
                 } else {
                     $log->update([
                         'status' => 'processed',
-                        'error_message' => "Transaction with waybill $waybill_id not found in our database"
+                        'error_message' => "Transaction not found for ID: $biteshipOrderId or Waybill: $waybill_id"
                     ]);
                 }
-                return response()->json(['message' => 'ok'], 200);
+            } else {
+                $log->update(['status' => 'processed', 'error_message' => 'Missing order_id/waybill_id or status in payload']);
             }
-
-            $log->update(['status' => 'processed', 'error_message' => 'Missing waybill_id or status in payload']);
+            
             return response()->json(['message' => 'ok'], 200);
         } catch (\Exception $e) {
             $log->update([
@@ -70,6 +78,27 @@ class WebhookController extends Controller
             Log::error("Biteship Webhook Error: " . $e->getMessage());
             return response()->json(['message' => 'error handled'], 200);
         }
+    }
+
+    /**
+     * Map Biteship status to local status
+     */
+    protected function mapBiteshipStatus($biteshipStatus)
+    {
+        $map = [
+            'placed' => 'paid',
+            'confirmed' => 'processing',
+            'allocated' => 'processing',
+            'picking_up' => 'processing',
+            'picked_up' => 'shipping',
+            'dropping_off' => 'shipping',
+            'shipped' => 'shipping',
+            'delivered' => 'completed',
+            'cancelled' => 'cancelled',
+            'rejected' => 'cancelled',
+        ];
+
+        return $map[$biteshipStatus] ?? 'processing';
     }
     /**
      * Handle Xendit Webhook

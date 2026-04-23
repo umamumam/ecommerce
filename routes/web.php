@@ -28,7 +28,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
-    
+
     // Order Management
     Route::post('/orders/bulk-label', [\App\Http\Controllers\Admin\OrderController::class, 'bulkLabel'])->name('admin.orders.bulkLabel');
     Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
@@ -100,7 +100,7 @@ Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'add'])->
 Route::patch('/cart/update', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
-Route::post('/webhook/biteship', [\App\Http\Controllers\Api\BiteshipWebhookController::class, 'handle']);
+// Route::post('/webhook/biteship', [\App\Http\Controllers\Api\BiteshipWebhookController::class, 'handle']);
 Route::post('/webhook/xendit', [\App\Http\Controllers\WebhookController::class, 'handleXendit']);
 
 require __DIR__ . '/auth.php';

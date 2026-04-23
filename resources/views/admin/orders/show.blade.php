@@ -343,5 +343,12 @@
                 alert('Gagal menyalin resi.');
             });
         }
+
+        // Auto Refresh logic for "Auto Update" via Webhook detection
+        @if(in_array($order->status, ['processing', 'shipping']))
+            setTimeout(function() {
+                window.location.reload();
+            }, 60000); // Refresh every 60 seconds to detect webhook updates
+        @endif
     </script>
 </x-app-layout>

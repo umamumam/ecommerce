@@ -58,25 +58,37 @@
             </div>
 
             <div class="pl-11 border-l-2 border-slate-100 ml-4 space-y-6">
-                <div class="relative">
-                    <div
-                        class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100">
+                @if($tracking && isset($tracking['history']) && count($tracking['history']) > 0)
+                    @foreach($tracking['history'] as $history)
+                    <div class="relative {{ !$loop->first ? 'opacity-50' : '' }}">
+                        <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full {{ $loop->first ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
+                        <p class="text-[12px] font-medium {{ $loop->first ? 'text-emerald-600' : 'text-slate-600' }}">
+                            {{ $history['note'] }}
+                        </p>
+                        <p class="text-[10px] text-slate-400 mt-1">{{ \Carbon\Carbon::parse($history['updated_at'])->format('d M Y, H:i') }}</p>
                     </div>
-                    <p class="text-[12px] font-medium text-emerald-600">
-                        @if($transaction->status == 'pending') Menunggu Pembayaran
-                        @elseif($transaction->status == 'paid') Pesanan sedang dikemas
-                        @elseif($transaction->status == 'shipping') Paket telah diserahkan ke kurir
-                        @elseif($transaction->status == 'completed') Paket telah diterima
-                        @endif
-                    </p>
-                    <p class="text-[10px] text-slate-400 mt-1">{{ $transaction->updated_at->format('d M Y, H:i') }}</p>
-                </div>
+                    @endforeach
+                @else
+                    <div class="relative">
+                        <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></div>
+                        <p class="text-[12px] font-medium text-emerald-600">
+                            @if($transaction->status == 'pending') Menunggu Pembayaran
+                            @elseif($transaction->status == 'paid') Pesanan sedang dikemas
+                            @elseif($transaction->status == 'processing') Pesanan sedang diproses
+                            @elseif($transaction->status == 'shipping') Paket telah diserahkan ke kurir
+                            @elseif($transaction->status == 'completed') Paket telah diterima
+                            @else {{ ucfirst($transaction->status) }}
+                            @endif
+                        </p>
+                        <p class="text-[10px] text-slate-400 mt-1">{{ $transaction->updated_at->format('d M Y, H:i') }}</p>
+                    </div>
+                @endif
+                
                 @if($transaction->shipping_waybill)
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 mt-4">
                     <div class="flex flex-col">
                         <span class="text-[10px] text-slate-400 font-bold uppercase">No. Resi</span>
-                        <span class="text-[12px] font-mono font-bold text-slate-700">{{ $transaction->shipping_waybill
-                            }}</span>
+                        <span class="text-[12px] font-mono font-bold text-slate-700">{{ $transaction->shipping_waybill }}</span>
                     </div>
                     <button onclick="navigator.clipboard.writeText('{{ $transaction->shipping_waybill }}')"
                         class="text-xs font-bold text-shopee uppercase">Salin</button>
