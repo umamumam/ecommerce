@@ -70,7 +70,7 @@
                     </div>
                     <span class="text-[11px] font-bold uppercase {{ $trx->status == 'pending' ? 'text-amber-500' : ($trx->status == 'cancelled' ? 'text-slate-400' : 'text-emerald-500') }}">
                         @if($trx->status == 'pending') Belum Bayar
-                        @elseif($trx->status == 'paid') Dikemas
+                        @elseif($trx->status == 'paid' || $trx->status == 'processing') Dikemas
                         @elseif($trx->status == 'shipping') Sedang Dikirim
                         @elseif($trx->status == 'completed') Selesai
                         @else {{ ucfirst($trx->status) }} @endif

@@ -21,7 +21,7 @@ class AccountController extends Controller
         $user = Auth::user();
         $counts = [
             'pending' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'pending')->count(),
-            'paid' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'paid')->count(),
+            'paid' => \App\Models\Transaction::where('user_id', $user->id)->whereIn('status', ['paid', 'processing'])->count(),
             'shipping' => \App\Models\Transaction::where('user_id', $user->id)->where('status', 'shipping')->count(),
         ];
         
@@ -36,7 +36,11 @@ class AccountController extends Controller
             ->latest();
         
         if ($status && $status !== 'all') {
-            $query->where('status', $status);
+            if ($status === 'paid') {
+                $query->whereIn('status', ['paid', 'processing']);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         $transactions = $query->get();

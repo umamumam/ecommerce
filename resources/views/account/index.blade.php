@@ -45,11 +45,18 @@
 <body class="antialiased pb-28">
 
     <div class="premium-header">
-        <div class="flex items-center justify-between px-6 pt-8 text-white">
-            <h1 class="text-lg font-black tracking-tighter uppercase">Profil Saya</h1>
-            <a href="#" class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md">
-                <i class="ti ti-settings text-lg"></i>
-            </a>
+        <div class="max-w-[700px] mx-auto flex items-center justify-between px-6 pt-8 text-white">
+            <div class="flex-1 flex justify-start">
+                <a href="{{ url('/') }}" class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md hover:bg-white/30 transition">
+                    <i class="ti ti-home text-lg"></i>
+                </a>
+            </div>
+            <h1 class="text-lg font-black tracking-tighter uppercase text-center flex-[2]">Profil Saya</h1>
+            <div class="flex-1 flex justify-end">
+                <a href="#" class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md hover:bg-white/30 transition">
+                    <i class="ti ti-settings text-lg"></i>
+                </a>
+            </div>
         </div>
     </div>
 
