@@ -223,12 +223,21 @@
                     <span>{{ $transaction->created_at->format('d-m-Y H:i') }}</span>
                 </div>
 
-                @if($transaction->status == 'pending' && $transaction->payment_url)
-                <div class="pt-4">
-                    <a href="{{ $transaction->payment_url }}" target="_blank"
-                        class="w-full inline-block text-center py-3 bg-shopee text-white text-[12px] font-bold rounded-sm shadow-md">
+                @if($transaction->status == 'pending')
+                <div class="pt-4 border-t mt-4 border-slate-100">
+                    @if($transaction->payment_url)
+                    <a href="{{ $transaction->payment_url }}"
+                        class="w-full flex items-center justify-center gap-2 py-3 bg-shopee text-white text-[13px] font-bold rounded shadow-sm active:scale-[0.98] transition-transform">
+                        <i class="ti ti-wallet text-lg"></i>
                         BAYAR SEKARANG
                     </a>
+                    @else
+                    <button onclick="alert('Link pembayaran belum tersedia untuk pesanan ini. Silakan buat pesanan baru atau hubungi admin.')"
+                        class="w-full flex items-center justify-center gap-2 py-3 bg-slate-400 text-white text-[13px] font-bold rounded shadow-sm active:scale-[0.98] transition-transform">
+                        <i class="ti ti-alert-circle text-lg"></i>
+                        PEMBAYARAN TIDAK TERSEDIA
+                    </button>
+                    @endif
                 </div>
                 @endif
             </div>
