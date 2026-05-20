@@ -59,44 +59,51 @@
 
             <div class="pl-11 border-l-2 border-slate-100 ml-4 space-y-6" id="tracking-history-container">
                 @if($tracking && isset($tracking['history']) && count($tracking['history']) > 0)
-                    @foreach($tracking['history'] as $history)
-                    <div class="tracking-item relative {{ $loop->first ? '' : 'hidden opacity-50' }}">
-                        <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full {{ $loop->first ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
-                        <p class="text-[12px] font-medium {{ $loop->first ? 'text-emerald-600' : 'text-slate-600' }}">
-                            {{ $history['note'] }}
-                        </p>
-                        <p class="text-[10px] text-slate-400 mt-1">{{ \Carbon\Carbon::parse($history['updated_at'])->format('d M Y, H:i') }}</p>
+                @foreach($tracking['history'] as $history)
+                <div class="tracking-item relative {{ $loop->first ? '' : 'hidden opacity-50' }}">
+                    <div
+                        class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full {{ $loop->first ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}">
                     </div>
-                    @endforeach
+                    <p class="text-[12px] font-medium {{ $loop->first ? 'text-emerald-600' : 'text-slate-600' }}">
+                        {{ $history['note'] }}
+                    </p>
+                    <p class="text-[10px] text-slate-400 mt-1">{{
+                        \Carbon\Carbon::parse($history['updated_at'])->format('d M Y, H:i') }}</p>
+                </div>
+                @endforeach
 
-                    @if(count($tracking['history']) > 1)
-                    <button onclick="toggleTracking()" id="btn-toggle-tracking" class="text-[11px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                        <span>Lihat Riwayat Lainnya</span>
-                        <i class="ti ti-chevron-down"></i>
-                    </button>
-                    @endif
-                @else
-                    <div class="relative">
-                        <div class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></div>
-                        <p class="text-[12px] font-medium text-emerald-600">
-                            @if($transaction->status == 'pending') Menunggu Pembayaran
-                            @elseif($transaction->status == 'paid') Pesanan sedang dikemas
-                            @elseif($transaction->status == 'processing') Pesanan sedang diproses
-                            @elseif($transaction->status == 'shipping') Paket telah diserahkan ke kurir
-                            @elseif($transaction->status == 'completed') Paket telah diterima
-                            @else {{ ucfirst($transaction->status) }}
-                            @endif
-                        </p>
-                        <p class="text-[10px] text-slate-400 mt-1">{{ $transaction->updated_at->format('d M Y, H:i') }}</p>
-                    </div>
+                @if(count($tracking['history']) > 1)
+                <button onclick="toggleTracking()" id="btn-toggle-tracking"
+                    class="text-[11px] font-bold text-slate-400 uppercase flex items-center gap-1">
+                    <span>Lihat Riwayat Lainnya</span>
+                    <i class="ti ti-chevron-down"></i>
+                </button>
                 @endif
-                
+                @else
+                <div class="relative">
+                    <div
+                        class="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100">
+                    </div>
+                    <p class="text-[12px] font-medium text-emerald-600">
+                        @if($transaction->status == 'pending') Menunggu Pembayaran
+                        @elseif($transaction->status == 'paid') Pesanan sedang dikemas
+                        @elseif($transaction->status == 'processing') Pesanan sedang diproses
+                        @elseif($transaction->status == 'shipping') Paket telah diserahkan ke kurir
+                        @elseif($transaction->status == 'completed') Paket telah diterima
+                        @else {{ ucfirst($transaction->status) }}
+                        @endif
+                    </p>
+                    <p class="text-[10px] text-slate-400 mt-1">{{ $transaction->updated_at->format('d M Y, H:i') }}</p>
+                </div>
+                @endif
+
                 <div class="flex flex-col gap-2 mt-4">
                     @if($transaction->shipping_waybill)
                     <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <div class="flex flex-col">
                             <span class="text-[10px] text-slate-400 font-bold uppercase">No. Resi</span>
-                            <span class="text-[12px] font-mono font-bold text-slate-700">{{ $transaction->shipping_waybill }}</span>
+                            <span class="text-[12px] font-mono font-bold text-slate-700">{{
+                                $transaction->shipping_waybill }}</span>
                         </div>
                         <button onclick="navigator.clipboard.writeText('{{ $transaction->shipping_waybill }}')"
                             class="text-xs font-bold text-shopee uppercase">Salin</button>
@@ -104,8 +111,8 @@
                     @endif
 
                     @if($transaction->biteship_tracking_link)
-                    <a href="{{ $transaction->biteship_tracking_link }}" target="_blank" 
-                       class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 py-3 rounded-lg border border-emerald-100 text-[12px] font-bold">
+                    <a href="{{ $transaction->biteship_tracking_link }}" target="_blank"
+                        class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 py-3 rounded-lg border border-emerald-100 text-[12px] font-bold">
                         <i class="ti ti-map-2"></i>
                         LIHAT LIVE TRACKING (MAPS)
                     </a>
@@ -232,7 +239,8 @@
                         BAYAR SEKARANG
                     </a>
                     @else
-                    <button onclick="alert('Link pembayaran belum tersedia untuk pesanan ini. Silakan buat pesanan baru atau hubungi admin.')"
+                    <button
+                        onclick="alert('Link pembayaran belum tersedia untuk pesanan ini. Silakan buat pesanan baru atau hubungi admin.')"
                         class="w-full flex items-center justify-center gap-2 py-3 bg-slate-400 text-white text-[13px] font-bold rounded shadow-sm active:scale-[0.98] transition-transform">
                         <i class="ti ti-alert-circle text-lg"></i>
                         PEMBAYARAN TIDAK TERSEDIA
