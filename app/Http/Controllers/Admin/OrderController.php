@@ -236,17 +236,6 @@ class OrderController extends Controller
             }
         }
 
-        // DETEKSI SANDBOX / TESTING MODE:
-        // Di mode Sandbox Biteship, semua nomor resi diawali dengan 'WYB-'.
-        // Karena API Single Label resmi Biteship memiliki bug bawaan di sandbox (selalu gagal generate barcode untuk beberapa kurir),
-        // kita otomatis mengalihkan ke Cetak Internal (A6) khusus untuk pesanan testing/sandbox ini agar Anda tetap bisa mengetes print.
-        // Namun, jika nanti pesanan nyata di Live Mode (resi asli bukan 'WYB-'), sistem akan otomatis
-        // memanggil & menampilkan label terintegrasi Biteship secara 100% sempurna!
-        if ($order->shipping_waybill && \Illuminate\Support\Str::startsWith($order->shipping_waybill, 'WYB-')) {
-            \Log::info("Sandbox mode detected for Transaction ID: {$order->id}. Routing to local A6 thermal label.");
-            return $this->printInternal($id);
-        }
-
         // Ambil data dari Biteship
         $response = $this->biteship->getLabel($order->biteship_order_id);
 
