@@ -236,8 +236,10 @@ class OrderController extends Controller
             }
         }
 
-        // Ambil data dari Biteship
-        $response = $this->biteship->getLabel($order->biteship_order_id);
+        // Ambil data label dari Biteship menggunakan endpoint Bulk Labels (POST /v1/orders/labels)
+        // karena endpoint Single Label (GET /v1/orders/{id}/label) sering mengalami kendala barcode generation
+        // di sandbox/live mode, sedangkan endpoint bulk labels sangat stabil dan mengembalikan PDF thermal resmi yang sama.
+        $response = $this->biteship->getBulkLabels([$order->biteship_order_id]);
 
         if ($response && isset($response['url'])) {
             return redirect($response['url']);
