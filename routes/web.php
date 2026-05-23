@@ -103,38 +103,4 @@ Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remov
 // Route::post('/webhook/biteship', [\App\Http\Controllers\Api\BiteshipWebhookController::class, 'handle']);
 Route::post('/webhook/xendit', [\App\Http\Controllers\WebhookController::class, 'handleXendit']);
 
-Route::get('/debug-biteship/{id}', function($id) {
-    $order = \App\Models\Transaction::findOrFail($id);
-    $biteship = app(\App\Services\BiteshipService::class);
-    
-    $orderData = null;
-    if ($order->biteship_order_id) {
-        $orderData = $biteship->getOrder($order->biteship_order_id);
-    }
-    
-    $singleLabel = null;
-    if ($order->biteship_order_id) {
-        $singleLabel = $biteship->getLabel($order->biteship_order_id);
-    }
-    
-    $bulkLabel = null;
-    if ($order->biteship_order_id) {
-        $bulkLabel = $biteship->getBulkLabels([$order->biteship_order_id]);
-    }
-    
-    return response()->json([
-        'local_transaction' => [
-            'id' => $order->id,
-            'code' => $order->code,
-            'status' => $order->status,
-            'biteship_order_id' => $order->biteship_order_id,
-            'shipping_waybill' => $order->shipping_waybill,
-            'shipping_courier' => $order->shipping_courier,
-        ],
-        'biteship_order_details' => $orderData,
-        'biteship_single_label_response' => $singleLabel,
-        'biteship_bulk_label_response' => $bulkLabel,
-    ]);
-});
-
 require __DIR__ . '/auth.php';
