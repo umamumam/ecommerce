@@ -110,6 +110,22 @@ class BiteshipService
         }
     }
     /**
+     * Get shipment order details from Biteship by ID
+     */
+    public function getOrder($orderId)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $this->apiKey,
+            ])->get("{$this->baseUrl}/v1/orders/{$orderId}");
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Biteship getOrder Error: ' . $e->getMessage());
+            return null;
+        }
+    }
+    /**
      * Get saved locations from Biteship
      */
     public function getLocations()
