@@ -42,6 +42,18 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Transaction::with('details.product', 'user')->findOrFail($id);
+
+        // Proactively sync waybill from Biteship if it's missing locally
+        if ($order->biteship_order_id && empty($order->shipping_waybill)) {
+            $biteshipOrder = $this->biteship->getOrder($order->biteship_order_id);
+            if ($biteshipOrder && isset($biteshipOrder['courier']['waybill_id'])) {
+                $order->update([
+                    'shipping_waybill' => $biteshipOrder['courier']['waybill_id'],
+                    'biteship_tracking_link' => $biteshipOrder['courier']['link'] ?? $order->biteship_tracking_link,
+                ]);
+            }
+        }
+
         return view('admin.orders.show', compact('order'));
     }
 
@@ -72,6 +84,13 @@ class OrderController extends Controller
         }
 
         $msg = $response['message'] ?? 'Gagal mengambil label massal (Limit Sandbox)';
+        
+        // Parse error message if it's JSON from Biteship API
+        $decoded = json_decode($msg, true);
+        if (is_array($decoded)) {
+            $msg = $decoded['error'] ?? ($decoded['message'] ?? $msg);
+        }
+
         return response()->json(['message' => $msg], 500);
     }
 
@@ -133,7 +152,7 @@ class OrderController extends Controller
             return back()->with('success', 'Berhasil membuat pengiriman di Biteship.');
         }
 
-        return back()->with('error', 'Gagal membuat pengiriman: ' . ($response['error'] ?? 'Unknown Error'));
+        return back()->with('error', 'Gagal membuat pengiriman: ' . ($response ? ($response['error'] ?? 'Unknown Error') : 'Koneksi ke Biteship gagal'));
     }
 
     public function syncStatus()
@@ -205,22 +224,48 @@ class OrderController extends Controller
             return back()->with('error', 'Pesanan ini belum didaftarkan ke pengiriman.');
         }
 
+        // Proactively sync waybill from Biteship if it's missing locally
+        if (empty($order->shipping_waybill)) {
+            $biteshipOrder = $this->biteship->getOrder($order->biteship_order_id);
+            if ($biteshipOrder && isset($biteshipOrder['courier']['waybill_id'])) {
+                $order->update([
+                    'shipping_waybill' => $biteshipOrder['courier']['waybill_id'],
+                    'biteship_tracking_link' => $biteshipOrder['courier']['link'] ?? $order->biteship_tracking_link,
+                ]);
+                $order->refresh();
+            }
+        }
+
         // Ambil data dari Biteship
         $response = $this->biteship->getLabel($order->biteship_order_id);
 
-        if (isset($response['url'])) {
+        if ($response && isset($response['url'])) {
             return redirect($response['url']);
         }
 
         $message = $response['message'] ?? 'Link label belum tersedia.';
+
+        // Log warning for developers/admins to troubleshoot
+        \Log::warning("Gagal mengambil label resmi Biteship untuk Transaksi ID: {$order->id}, biteship_order_id: {$order->biteship_order_id}. Response: " . json_encode($response));
+
+        // Parse error message if it's JSON from Biteship API
+        $decoded = json_decode($message, true);
+        if (is_array($decoded)) {
+            $message = $decoded['error'] ?? ($decoded['message'] ?? $message);
+        }
+
+        // Jika error terkait barcode/resi belum siap dari kurir, tampilkan panduan cara penanganannya
+        if (str_contains(strtolower($message), 'barcode') || str_contains(strtolower($message), 'shipping label') || str_contains(strtolower($message), 'resi')) {
+            return back()->with('error', 'Resi resmi sedang disiapkan oleh kurir (Biteship). Silakan tunggu 1 - 2 menit agar sistem kurir selesai men-generate barcode secara lengkap, lalu silakan klik kembali tombol "CETAK LABEL RESI".');
+        }
         
         // Logika khusus Biteship: terkadang dia butuh waktu 1-2 detik untuk generate PDF 
         // setelah order baru saja dibuat.
-        if (isset($response['success']) && $response['success'] === true && !isset($response['url'])) {
+        if ($response && isset($response['success']) && $response['success'] === true && !isset($response['url'])) {
             return back()->with('success', 'Resi sedang disiapkan oleh Biteship. Silakan klik tombol "CETAK RESI" lagi dalam beberapa saat.');
         }
 
-        return back()->with('error', 'Gagal mengambil label: ' . $message);
+        return back()->with('error', 'Gagal mengambil label resmi: ' . $message);
     }
 
     public function destroy($id)
