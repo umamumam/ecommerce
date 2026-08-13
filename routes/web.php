@@ -13,6 +13,7 @@ Route::get('/', function () {
     return view('welcome', compact('categories', 'products'));
 });
 
+Route::get('/koleksi', [ProductController::class, 'catalog'])->name('catalog.index');
 Route::get('/product/{slug}', [ProductController::class, 'userShow'])->name('product.detail');
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(function () {

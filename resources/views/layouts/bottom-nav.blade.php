@@ -10,7 +10,7 @@
         <i class="ti ti-home ti-sm mb-1"></i>
         <span>Beranda</span>
     </a>
-    <a href="#" class="bottom-nav-item">
+    <a href="{{ route('catalog.index') }}" class="bottom-nav-item {{ Request::is('koleksi*') ? 'active' : '' }}">
         <i class="ti ti-category ti-sm mb-1"></i>
         <span>Kategori</span>
     </a>

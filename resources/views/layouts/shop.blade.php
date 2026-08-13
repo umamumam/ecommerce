@@ -92,10 +92,14 @@
                 </a>
             </div>
         </div>
-        <div class="relative">
-            <input type="text" class="w-full bg-slate-100 border-none rounded-xl py-2.5 px-11 text-xs placeholder-slate-500 focus:ring-1 focus:ring-[#006d5b]" placeholder="Cari fashion terbaru...">
-            <i class="ti ti-search absolute left-4 top-3 text-slate-500"></i>
-        </div>
+        <form action="{{ route('catalog.index') }}" method="GET" class="relative">
+            <input type="text" name="q" value="{{ request('q') }}"
+                class="w-full bg-slate-100/90 border-none rounded-lg py-1.5 pl-9 pr-3 text-[11px] placeholder-slate-400 focus:ring-1 focus:ring-[#006d5b] h-9"
+                placeholder="Cari fashion terbaru...">
+            <button type="submit" class="absolute left-3 top-2.5 text-slate-400 hover:text-[#006d5b]">
+                <i class="ti ti-search text-sm"></i>
+            </button>
+        </form>
     </header>
 
     <main>

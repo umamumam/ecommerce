@@ -68,12 +68,14 @@
                 <a href="/" class="text-2xl font-black flex items-center">
                     <span class="text-[#006d5b]">TOKO</span><span class="text-[#f53003]">KITA</span>
                 </a>
-                <div class="relative flex-1 max-w-lg">
-                    <input type="text"
+                <form action="{{ route('catalog.index') }}" method="GET" class="relative flex-1 max-w-lg">
+                    <input type="text" name="q"
                         class="w-full bg-slate-100 border-none rounded-lg py-2.5 px-10 focus:ring-2 focus:ring-[#006d5b] text-sm"
                         placeholder="Apa yang kamu cari hari ini?">
-                    <i class="ti ti-search absolute left-3 top-3 text-slate-400"></i>
-                </div>
+                    <button type="submit" class="absolute left-3 top-3 text-slate-400 hover:text-[#006d5b]">
+                        <i class="ti ti-search"></i>
+                    </button>
+                </form>
             </div>
 
             <nav class="flex items-center gap-6 ml-8">
@@ -136,12 +138,14 @@
                 </a>
             </div>
         </div>
-        <div class="relative">
-            <input type="text"
-                class="w-full bg-slate-100 border-none rounded-xl py-2.5 px-11 text-xs placeholder-slate-500 focus:ring-1 focus:ring-[#006d5b]"
+        <form action="{{ route('catalog.index') }}" method="GET" class="relative">
+            <input type="text" name="q"
+                class="w-full bg-slate-100/90 border-none rounded-lg py-1.5 pl-9 pr-3 text-[11px] placeholder-slate-400 focus:ring-1 focus:ring-[#006d5b] h-9"
                 placeholder="Cari fashion terbaru...">
-            <i class="ti ti-search absolute left-4 top-3 text-slate-500"></i>
-        </div>
+            <button type="submit" class="absolute left-3 top-2.5 text-slate-400 hover:text-[#006d5b]">
+                <i class="ti ti-search text-sm"></i>
+            </button>
+        </form>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 lg:px-0 py-6">
@@ -248,48 +252,48 @@
         </section>
 
         <!-- Service Highlights -->
-        <section class="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-up"
+        <section class="mb-12 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 animate-fade-up"
             style="animation-delay: 0.15s">
             <div
-                class="service-card flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
-                <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center shrink-0">
-                    <i class="ti ti-truck text-2xl"></i>
+                class="service-card flex items-center gap-3 p-3.5 lg:p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
+                <div class="w-9 h-9 lg:w-12 lg:h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="ti ti-truck text-lg lg:text-2xl"></i>
                 </div>
                 <div>
-                    <h5 class="text-xs font-black uppercase text-slate-700">Gratis Ongkir</h5>
-                    <p class="text-[10px] text-slate-500">Belanja hemat ke seluruh Indo</p>
+                    <h5 class="text-[11px] lg:text-xs font-black uppercase text-slate-700">Gratis Ongkir</h5>
+                    <p class="text-[9px] lg:text-[10px] text-slate-500 line-clamp-1">Belanja hemat ke seluruh Indo</p>
                 </div>
             </div>
             <div
-                class="service-card flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
-                <div class="w-12 h-12 bg-green-50 text-green-500 rounded-xl flex items-center justify-center shrink-0">
-                    <i class="ti ti-shield-check text-2xl"></i>
+                class="service-card flex items-center gap-3 p-3.5 lg:p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
+                <div class="w-9 h-9 lg:w-12 lg:h-12 bg-green-50 text-green-500 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="ti ti-shield-check text-lg lg:text-2xl"></i>
                 </div>
                 <div>
-                    <h5 class="text-xs font-black uppercase text-slate-700">100% Original</h5>
-                    <p class="text-[10px] text-slate-500">Jaminan produk berkualitas</p>
+                    <h5 class="text-[11px] lg:text-xs font-black uppercase text-slate-700">100% Original</h5>
+                    <p class="text-[9px] lg:text-[10px] text-slate-500 line-clamp-1">Jaminan produk berkualitas</p>
                 </div>
             </div>
             <div
-                class="service-card flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
+                class="service-card flex items-center gap-3 p-3.5 lg:p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
                 <div
-                    class="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center shrink-0">
-                    <i class="ti ti-headset text-2xl"></i>
+                    class="w-9 h-9 lg:w-12 lg:h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="ti ti-headset text-lg lg:text-2xl"></i>
                 </div>
                 <div>
-                    <h5 class="text-xs font-black uppercase text-slate-700">Layanan 24/7</h5>
-                    <p class="text-[10px] text-slate-500">Bantuan CS ramah & cepat</p>
+                    <h5 class="text-[11px] lg:text-xs font-black uppercase text-slate-700">Layanan 24/7</h5>
+                    <p class="text-[9px] lg:text-[10px] text-slate-500 line-clamp-1">Bantuan CS ramah & cepat</p>
                 </div>
             </div>
             <div
-                class="service-card flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
+                class="service-card flex items-center gap-3 p-3.5 lg:p-5 bg-white border border-slate-100 rounded-2xl shadow-sm transition duration-300">
                 <div
-                    class="w-12 h-12 bg-purple-50 text-purple-500 rounded-xl flex items-center justify-center shrink-0">
-                    <i class="ti ti-lock text-2xl"></i>
+                    class="w-9 h-9 lg:w-12 lg:h-12 bg-purple-50 text-purple-500 rounded-xl flex items-center justify-center shrink-0">
+                    <i class="ti ti-lock text-lg lg:text-2xl"></i>
                 </div>
                 <div>
-                    <h5 class="text-xs font-black uppercase text-slate-700">Bayar Aman</h5>
-                    <p class="text-[10px] text-slate-500">Privasi & data terjaga aman</p>
+                    <h5 class="text-[11px] lg:text-xs font-black uppercase text-slate-700">Bayar Aman</h5>
+                    <p class="text-[9px] lg:text-[10px] text-slate-500 line-clamp-1">Privasi & data terjaga aman</p>
                 </div>
             </div>
         </section>
@@ -299,13 +303,13 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="font-black text-base lg:text-lg uppercase tracking-widest border-l-4 border-[#006d5b] pl-4">
                     KATEGORI PRODUK</h3>
-                <a href="#"
+                <a href="{{ route('catalog.index') }}"
                     class="text-[#006d5b] text-[10px] lg:text-xs font-black hover:underline uppercase tracking-tighter">Lihat
                     Semua</a>
             </div>
             <div class="categories-scroll gap-6 pb-4">
                 @forelse($categories as $cat)
-                <div class="flex flex-col items-center gap-2 lg:gap-3 shrink-0 group cursor-pointer">
+                <a href="{{ route('catalog.index', ['category' => $cat->slug]) }}" class="flex flex-col items-center gap-2 lg:gap-3 shrink-0 group cursor-pointer">
                     <div
                         class="w-14 h-14 lg:w-24 lg:h-24 bg-white rounded-2xl lg:rounded-3xl shadow-sm flex items-center justify-center border border-slate-200/80 transition-all duration-300 transform group-hover:-translate-y-2 group-hover:shadow-xl group-hover:shadow-[#006d5b]/15 group-hover:border-[#006d5b] active:scale-95 overflow-hidden">
                         @if($cat->image)
@@ -319,7 +323,7 @@
                     <span
                         class="text-[8px] lg:text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-[#006d5b] transition-colors duration-300">{{
                         $cat->name }}</span>
-                </div>
+                </a>
                 @empty
                 <p class="text-xs text-slate-400 italic">Belum ada kategori aktif.</p>
                 @endforelse
@@ -395,9 +399,9 @@
             </div>
 
             <div class="flex justify-center mt-12">
-                <button
-                    class="bg-white border-2 border-[#006d5b] text-[#006d5b] px-6 lg:px-10 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-black text-[10px] lg:text-sm uppercase tracking-widest hover:bg-[#006d5b] hover:text-white transition duration-300 transform hover:-translate-y-1 shadow-lg">Lihat
-                    Semua Koleksi</button>
+                <a href="{{ route('catalog.index') }}"
+                    class="bg-white border-2 border-[#006d5b] text-[#006d5b] px-6 lg:px-10 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-black text-[10px] lg:text-sm uppercase tracking-widest hover:bg-[#006d5b] hover:text-white transition duration-300 transform hover:-translate-y-1 shadow-lg inline-block">Lihat
+                    Semua Koleksi</a>
             </div>
         </section>
 

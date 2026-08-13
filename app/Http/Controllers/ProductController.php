@@ -87,6 +87,56 @@ class ProductController extends Controller
         return view('welcome-product-detail', compact('product', 'relatedProducts'));
     }
 
+    public function catalog(Request $request)
+    {
+        $categories = Category::where('is_active', true)->get();
+
+        $query = Product::with('category')->where('is_active', true);
+
+        // Search query
+        $searchTerm = trim($request->get('q', ''));
+        if (!empty($searchTerm)) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Category filter (slug or id)
+        $categorySlug = $request->get('category');
+        $currentCategory = null;
+        if (!empty($categorySlug)) {
+            $currentCategory = Category::where('slug', $categorySlug)->first();
+            if (!$currentCategory && is_numeric($categorySlug)) {
+                $currentCategory = Category::find($categorySlug);
+            }
+            if ($currentCategory) {
+                $query->where('category_id', $currentCategory->id);
+            }
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'rating':
+                $query->orderBy('rating', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $products = $query->paginate(15)->withQueryString();
+
+        return view('catalog.index', compact('products', 'categories', 'currentCategory', 'searchTerm', 'sort'));
+    }
+
     public function update(Request $request, Product $product)
     {
         $request->validate([
