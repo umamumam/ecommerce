@@ -307,17 +307,17 @@
                 @forelse($categories as $cat)
                 <div class="flex flex-col items-center gap-2 lg:gap-3 shrink-0 group cursor-pointer">
                     <div
-                        class="w-14 h-14 lg:w-24 lg:h-24 bg-white rounded-2xl lg:rounded-3xl shadow-sm flex items-center justify-center border border-slate-100 group-hover:bg-[#006d5b] group-hover:border-[#006d5b] transition-all duration-300 transform group-hover:-translate-y-2">
+                        class="w-14 h-14 lg:w-24 lg:h-24 bg-white rounded-2xl lg:rounded-3xl shadow-sm flex items-center justify-center border border-slate-200/80 transition-all duration-300 transform group-hover:-translate-y-2 group-hover:shadow-xl group-hover:shadow-[#006d5b]/15 group-hover:border-[#006d5b] active:scale-95 overflow-hidden">
                         @if($cat->image)
                         <img src="{{ asset('storage/'.$cat->image) }}"
-                            class="w-8 h-8 lg:w-12 lg:h-12 object-contain group-hover:brightness-0 group-hover:invert transition-all">
+                            class="w-8 h-8 lg:w-12 lg:h-12 object-contain group-hover:scale-110 transition-transform duration-300 ease-out">
                         @else
                         <i
-                            class="ti ti-category text-2xl lg:text-3xl text-slate-400 group-hover:text-white transition-colors"></i>
+                            class="ti ti-category text-2xl lg:text-3xl text-slate-400 group-hover:text-[#006d5b] group-hover:scale-110 transition-all duration-300"></i>
                         @endif
                     </div>
                     <span
-                        class="text-[8px] lg:text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-[#006d5b]">{{
+                        class="text-[8px] lg:text-[10px] font-black uppercase tracking-widest text-slate-600 group-hover:text-[#006d5b] transition-colors duration-300">{{
                         $cat->name }}</span>
                 </div>
                 @empty
