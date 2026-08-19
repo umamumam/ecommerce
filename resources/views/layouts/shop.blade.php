@@ -135,17 +135,32 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Partner Pembayaran</h4>
-                <div class="grid grid-cols-4 gap-2 mb-6 px-10 lg:px-0 opacity-50">
-                    <i class="ti ti-brand-visa text-2xl"></i>
-                    <i class="ti ti-brand-mastercard text-2xl"></i>
-                    <i class="ti ti-credit-card text-2xl"></i>
-                    <i class="ti ti-building-bank text-2xl"></i>
+                <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Pembayaran</h4>
+                <div class="grid grid-cols-4 gap-1.5 mb-6">
+                    @php
+                        $keyPaymentLogos = [
+                            ['name' => 'QRIS', 'file' => 'qris.svg'],
+                            ['name' => 'DANA', 'file' => 'dana.svg'],
+                            ['name' => 'GoPay', 'file' => 'gopay.svg'],
+                            ['name' => 'OVO', 'file' => 'ovo.webp'],
+                            ['name' => 'ShopeePay', 'file' => 'shopeepay.webp'],
+                            ['name' => 'Mastercard', 'file' => 'mastercard.svg'],
+                            ['name' => 'VISA', 'file' => 'visa.webp'],
+                            ['name' => 'Alfamart', 'file' => 'alfamart.svg'],
+                        ];
+                    @endphp
+                    @foreach($keyPaymentLogos as $pay)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform" title="{{ $pay['name'] }}">
+                        <img src="{{ asset('assets/img/payments/'.$pay['file']) }}" class="max-h-4 max-w-full object-contain" alt="{{ $pay['name'] }}">
+                    </div>
+                    @endforeach
                 </div>
                 <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Partner Pengiriman</h4>
-                <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
-                    @foreach(['JNE', 'J&T', 'SICEPAT', 'GOSEND'] as $ship)
-                    <span class="bg-white/10 px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest text-white/70 border border-white/5">{{ $ship }}</span>
+                <div class="grid grid-cols-3 gap-1.5 justify-center lg:justify-start">
+                    @foreach(['jne', 'jnt', 'pos', 'sicepat', 'anteraja', 'ninja'] as $c)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform">
+                        <img src="{{ asset('assets/img/couriers/'.$c.'.webp') }}" class="max-h-4 max-w-full object-contain" alt="{{ strtoupper($c) }}" onerror="this.src='{{ asset('assets/img/couriers/'.$c.'.svg') }}'">
+                    </div>
                     @endforeach
                 </div>
             </div>

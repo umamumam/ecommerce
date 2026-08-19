@@ -460,21 +460,58 @@
                     @endforeach
                 </div>
             </div>
-        <!-- Payment Partners Section -->
-        <section class="mb-14 bg-white p-6 lg:p-8 rounded-3xl border border-slate-100 shadow-sm animate-fade-up">
+        <!-- Payment Partners Section (Moving Slideshow) -->
+        <section class="mb-14 bg-white p-6 lg:p-8 rounded-3xl border border-slate-100 shadow-sm overflow-hidden animate-fade-up">
             <div class="flex flex-col items-center mb-6 text-center">
                 <span class="text-[10px] font-black text-[#006d5b] uppercase tracking-widest mb-1">Transaksi Mudah &amp; Terpercaya</span>
                 <h3 class="font-black text-base lg:text-xl uppercase tracking-tight text-slate-800">Metode Pembayaran Lengkap</h3>
-                <p class="text-xs text-slate-400 mt-1 max-w-md">Mendukung QRIS, Virtual Account Bank Terbesar di Indonesia, E-Wallet, dan Kartu Kredit dengan keamanan terenkripsi</p>
+                <p class="text-xs text-slate-400 mt-1 max-w-md">Mendukung QRIS, E-Wallet, Kartu Kredit, Gerai Retail, dan Payment Gateway Resmi dengan keamanan terenkripsi</p>
             </div>
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-2.5 items-center justify-center">
-                @foreach(['qris', 'bca', 'mandiri', 'bni', 'bri', 'gopay', 'ovo', 'dana', 'shopeepay', 'visa', 'mastercard'] as $pay)
-                <div class="bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 p-2 rounded-xl flex items-center justify-center h-12 transition shadow-2xs hover:shadow-md group">
-                    <img src="{{ asset('assets/img/payments/'.$pay.'.svg') }}" 
-                         class="max-h-6 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
-                         alt="{{ strtoupper($pay) }}">
+
+            <!-- Continuous Infinite Moving Carousel -->
+            <div class="relative w-full overflow-hidden py-2">
+                <!-- Soft Gradient Fade Overlays -->
+                <div class="pointer-events-none absolute inset-y-0 left-0 w-16 lg:w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 w-16 lg:w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+                @php
+                    $paymentLogos = [
+                        ['name' => 'QRIS', 'file' => 'qris.svg'],
+                        ['name' => 'DANA', 'file' => 'dana.svg'],
+                        ['name' => 'GoPay', 'file' => 'gopay.svg'],
+                        ['name' => 'OVO', 'file' => 'ovo.webp'],
+                        ['name' => 'ShopeePay', 'file' => 'shopeepay.webp'],
+                        ['name' => 'PosPay', 'file' => 'pospay.webp'],
+                        ['name' => 'GPN', 'file' => 'gpn.svg'],
+                        ['name' => 'Mastercard', 'file' => 'mastercard.svg'],
+                        ['name' => 'VISA', 'file' => 'visa.webp'],
+                        ['name' => 'Alfamart', 'file' => 'alfamart.svg'],
+                        ['name' => 'Indomaret', 'file' => 'indomaret.webp'],
+                        ['name' => 'Midtrans', 'file' => 'midtrans.webp'],
+                        ['name' => 'Xendit', 'file' => 'xendit.webp'],
+                        ['name' => 'DOKU', 'file' => 'doku.webp'],
+                    ];
+                @endphp
+
+                <div class="marquee-track flex items-center">
+                    <!-- First Set of 14 Payment Logos -->
+                    @foreach($paymentLogos as $pay)
+                    <div class="w-32 lg:w-40 h-14 lg:h-16 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 rounded-2xl flex items-center justify-center p-3 transition-all shadow-2xs hover:shadow-md shrink-0 mx-2 group" title="{{ $pay['name'] }}">
+                        <img src="{{ asset('assets/img/payments/'.$pay['file']) }}" 
+                             class="max-h-7 lg:max-h-8 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
+                             alt="{{ $pay['name'] }}">
+                    </div>
+                    @endforeach
+
+                    <!-- Duplicate Set for Seamless Infinite Loop -->
+                    @foreach($paymentLogos as $pay)
+                    <div class="w-32 lg:w-40 h-14 lg:h-16 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 rounded-2xl flex items-center justify-center p-3 transition-all shadow-2xs hover:shadow-md shrink-0 mx-2 group" title="{{ $pay['name'] }}">
+                        <img src="{{ asset('assets/img/payments/'.$pay['file']) }}" 
+                             class="max-h-7 lg:max-h-8 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
+                             alt="{{ $pay['name'] }}">
+                    </div>
+                    @endforeach
                 </div>
-                @endforeach
             </div>
         </section>
 
@@ -519,9 +556,21 @@
             <div>
                 <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Pembayaran</h4>
                 <div class="grid grid-cols-4 gap-1.5 mb-6">
-                    @foreach(['qris', 'bca', 'mandiri', 'bni', 'bri', 'gopay', 'ovo', 'dana', 'shopeepay', 'visa', 'mastercard'] as $pay)
-                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform">
-                        <img src="{{ asset('assets/img/payments/'.$pay.'.svg') }}" class="max-h-4 max-w-full object-contain" alt="{{ strtoupper($pay) }}">
+                    @php
+                        $keyPaymentLogos = [
+                            ['name' => 'QRIS', 'file' => 'qris.svg'],
+                            ['name' => 'DANA', 'file' => 'dana.svg'],
+                            ['name' => 'GoPay', 'file' => 'gopay.svg'],
+                            ['name' => 'OVO', 'file' => 'ovo.webp'],
+                            ['name' => 'ShopeePay', 'file' => 'shopeepay.webp'],
+                            ['name' => 'Mastercard', 'file' => 'mastercard.svg'],
+                            ['name' => 'VISA', 'file' => 'visa.webp'],
+                            ['name' => 'Alfamart', 'file' => 'alfamart.svg'],
+                        ];
+                    @endphp
+                    @foreach($keyPaymentLogos as $pay)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform" title="{{ $pay['name'] }}">
+                        <img src="{{ asset('assets/img/payments/'.$pay['file']) }}" class="max-h-4 max-w-full object-contain" alt="{{ $pay['name'] }}">
                     </div>
                     @endforeach
                 </div>

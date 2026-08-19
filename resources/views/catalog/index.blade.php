@@ -344,11 +344,22 @@
 
             <div>
                 <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Pembayaran</h4>
-                <div class="grid grid-cols-4 gap-2 mb-6 px-10 lg:px-0">
-                    @foreach(['visa', 'mastercard', 'shopeepay', 'gopay', 'ovo', 'dana'] as $pay)
-                    <div
-                        class="bg-white/10 p-2 rounded-lg flex items-center justify-center grayscale hover:grayscale-0 transition cursor-pointer">
-                        <i class="ti ti-credit-card text-white/50"></i>
+                <div class="grid grid-cols-4 gap-1.5 mb-6">
+                    @php
+                        $keyPaymentLogos = [
+                            ['name' => 'QRIS', 'file' => 'qris.svg'],
+                            ['name' => 'DANA', 'file' => 'dana.svg'],
+                            ['name' => 'GoPay', 'file' => 'gopay.svg'],
+                            ['name' => 'OVO', 'file' => 'ovo.webp'],
+                            ['name' => 'ShopeePay', 'file' => 'shopeepay.webp'],
+                            ['name' => 'Mastercard', 'file' => 'mastercard.svg'],
+                            ['name' => 'VISA', 'file' => 'visa.webp'],
+                            ['name' => 'Alfamart', 'file' => 'alfamart.svg'],
+                        ];
+                    @endphp
+                    @foreach($keyPaymentLogos as $pay)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform" title="{{ $pay['name'] }}">
+                        <img src="{{ asset('assets/img/payments/'.$pay['file']) }}" class="max-h-4 max-w-full object-contain" alt="{{ $pay['name'] }}">
                     </div>
                     @endforeach
                 </div>
