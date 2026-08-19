@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(8, 8)">
+    <!-- Ninja Mask Circle -->
+    <circle cx="17" cy="17" r="15" fill="#C4161C"/>
+    <!-- Eyes cutout -->
+    <rect x="8" y="13" width="18" height="7" rx="3.5" fill="#FFFFFF"/>
+    <circle cx="13" cy="16.5" r="2" fill="#1C1C1C"/>
+    <circle cx="21" cy="16.5" r="2" fill="#1C1C1C"/>
+    <!-- Headband knot -->
+    <path d="M4 14 L0 10 M4 17 L-1 19" stroke="#C4161C" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Text -->
+    <text x="38" y="20" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="15" fill="#1C1C1C">NINJA</text>
+    <text x="38" y="30" font-family="'Arial', sans-serif" font-weight="800" font-size="9" fill="#C4161C" letter-spacing="1">XPRESS</text>
+  </g>
+</svg>

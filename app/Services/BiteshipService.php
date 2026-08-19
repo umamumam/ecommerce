@@ -12,7 +12,12 @@ class BiteshipService
 
     public function __construct()
     {
-        $this->apiKey = config('services.biteship.key');
+        $dbKey = null;
+        try {
+            $dbKey = \App\Models\Setting::where('key', 'biteship_api_key')->value('value');
+        } catch (\Throwable $e) {}
+
+        $this->apiKey = $dbKey ?: config('services.biteship.key');
         $this->baseUrl = 'https://api.biteship.com';
     }
 

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <rect x="0" y="3" width="30" height="28" rx="6" fill="#4B2C82"/>
+    <!-- Cute package face -->
+    <path d="M7 16 Q15 24 23 16" stroke="#FED100" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <circle cx="10" cy="12" r="2" fill="#FED100"/>
+    <circle cx="20" cy="12" r="2" fill="#FED100"/>
+    <!-- Text -->
+    <text x="36" y="22" font-family="'Nunito', 'Segoe UI', 'Arial Black', sans-serif" font-weight="900" font-size="18" fill="#4B2C82">paxel</text>
+    <text x="36" y="31" font-family="'Arial', sans-serif" font-weight="700" font-size="8" fill="#FED100" letter-spacing="1">PACKAGE HERO</text>
+  </g>
+</svg>

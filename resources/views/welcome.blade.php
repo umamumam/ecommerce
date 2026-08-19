@@ -56,6 +56,25 @@
             width: 1.5rem;
             background-color: #006d5b;
         }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 26s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 
@@ -405,6 +424,60 @@
             </div>
         </section>
 
+        <!-- Shipping Partners Section (Moving Slideshow) -->
+        <section class="mb-14 bg-white p-6 lg:p-8 rounded-3xl border border-slate-100 shadow-sm overflow-hidden animate-fade-up">
+            <div class="flex flex-col items-center mb-6 text-center">
+                <span class="text-[10px] font-black text-[#006d5b] uppercase tracking-widest mb-1">Pengiriman Cepat &amp; Aman</span>
+                <h3 class="font-black text-base lg:text-xl uppercase tracking-tight text-slate-800">Didukung Ekspedisi Terpercaya</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-md">Menjangkau seluruh pelosok Indonesia dengan integrasi kurir instan, reguler, express, dan kargo</p>
+            </div>
+
+            <!-- Continuous Infinite Moving Carousel (Right to Left) -->
+            <div class="relative w-full overflow-hidden py-2">
+                <!-- Soft Gradient Fade Overlays -->
+                <div class="pointer-events-none absolute inset-y-0 left-0 w-16 lg:w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 w-16 lg:w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+                <div class="marquee-track flex items-center">
+                    <!-- First Set of Courier Logos -->
+                    @foreach(['jne', 'jnt', 'pos', 'sicepat', 'anteraja', 'ninja', 'tiki', 'lion', 'sap', 'wahana', 'ide', 'paxel', 'gosend', 'grab'] as $cur)
+                    <div class="w-32 lg:w-40 h-14 lg:h-16 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 rounded-2xl flex items-center justify-center p-3 transition-all shadow-2xs hover:shadow-md shrink-0 mx-2 group">
+                        <img src="{{ asset('assets/img/couriers/'.$cur.'.webp') }}" 
+                             class="max-h-7 lg:max-h-8 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
+                             alt="{{ strtoupper($cur) }}"
+                             onerror="this.src='{{ asset('assets/img/couriers/'.$cur.'.svg') }}'">
+                    </div>
+                    @endforeach
+
+                    <!-- Duplicate Set for Seamless Infinite Loop -->
+                    @foreach(['jne', 'jnt', 'pos', 'sicepat', 'anteraja', 'ninja', 'tiki', 'lion', 'sap', 'wahana', 'ide', 'paxel', 'gosend', 'grab'] as $cur)
+                    <div class="w-32 lg:w-40 h-14 lg:h-16 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 rounded-2xl flex items-center justify-center p-3 transition-all shadow-2xs hover:shadow-md shrink-0 mx-2 group">
+                        <img src="{{ asset('assets/img/couriers/'.$cur.'.webp') }}" 
+                             class="max-h-7 lg:max-h-8 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
+                             alt="{{ strtoupper($cur) }}"
+                             onerror="this.src='{{ asset('assets/img/couriers/'.$cur.'.svg') }}'">
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        <!-- Payment Partners Section -->
+        <section class="mb-14 bg-white p-6 lg:p-8 rounded-3xl border border-slate-100 shadow-sm animate-fade-up">
+            <div class="flex flex-col items-center mb-6 text-center">
+                <span class="text-[10px] font-black text-[#006d5b] uppercase tracking-widest mb-1">Transaksi Mudah &amp; Terpercaya</span>
+                <h3 class="font-black text-base lg:text-xl uppercase tracking-tight text-slate-800">Metode Pembayaran Lengkap</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-md">Mendukung QRIS, Virtual Account Bank Terbesar di Indonesia, E-Wallet, dan Kartu Kredit dengan keamanan terenkripsi</p>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11 gap-2.5 items-center justify-center">
+                @foreach(['qris', 'bca', 'mandiri', 'bni', 'bri', 'gopay', 'ovo', 'dana', 'shopeepay', 'visa', 'mastercard'] as $pay)
+                <div class="bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#006d5b]/30 p-2 rounded-xl flex items-center justify-center h-12 transition shadow-2xs hover:shadow-md group">
+                    <img src="{{ asset('assets/img/payments/'.$pay.'.svg') }}" 
+                         class="max-h-6 max-w-full object-contain filter group-hover:scale-110 transition-transform duration-300" 
+                         alt="{{ strtoupper($pay) }}">
+                </div>
+                @endforeach
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
@@ -445,25 +518,21 @@
 
             <div>
                 <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Pembayaran</h4>
-                <div class="grid grid-cols-4 gap-2 mb-6 px-10 lg:px-0">
-                    @foreach(['visa', 'mastercard', 'shopeepay', 'gopay', 'ovo', 'dana'] as $pay)
-                    <div
-                        class="bg-white/10 p-2 rounded-lg flex items-center justify-center grayscale hover:grayscale-0 transition cursor-pointer">
-                        <i class="ti ti-credit-card text-white/50"></i>
+                <div class="grid grid-cols-4 gap-1.5 mb-6">
+                    @foreach(['qris', 'bca', 'mandiri', 'bni', 'bri', 'gopay', 'ovo', 'dana', 'shopeepay', 'visa', 'mastercard'] as $pay)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform">
+                        <img src="{{ asset('assets/img/payments/'.$pay.'.svg') }}" class="max-h-4 max-w-full object-contain" alt="{{ strtoupper($pay) }}">
                     </div>
                     @endforeach
                 </div>
                 <h4 class="font-bold text-lg lg:mb-6 mb-4 uppercase tracking-widest text-[#006d5b]">Partner Pengiriman
                 </h4>
-                <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
-                    <span
-                        class="bg-white/10 px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest text-white/70 border border-white/5">JNE</span>
-                    <span
-                        class="bg-white/10 px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest text-white/70 border border-white/5">J&T</span>
-                    <span
-                        class="bg-white/10 px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest text-white/70 border border-white/5">SICEPAT</span>
-                    <span
-                        class="bg-white/10 px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest text-white/70 border border-white/5">GOSEND</span>
+                <div class="grid grid-cols-3 gap-1.5 justify-center lg:justify-start">
+                    @foreach(['jne', 'jnt', 'pos', 'sicepat', 'anteraja', 'ninja'] as $c)
+                    <div class="bg-white p-1 rounded-lg flex items-center justify-center h-7 shadow-xs hover:scale-105 transition-transform">
+                        <img src="{{ asset('assets/img/couriers/'.$c.'.webp') }}" class="max-h-4 max-w-full object-contain" alt="{{ strtoupper($c) }}" onerror="this.src='{{ asset('assets/img/couriers/'.$c.'.svg') }}'">
+                    </div>
+                    @endforeach
                 </div>
             </div>
 

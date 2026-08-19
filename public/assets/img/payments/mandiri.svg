@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+        <rect width="120" height="40" rx="8" fill="#FFFFFF"/>
+        <text x="12" y="26" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="18" fill="#003868">mandırı</text>
+        <path d="M88 12C94 12 102 14 106 18C101 20 95 19 88 17C82 15 76 16 72 18C75 14 81 12 88 12Z" fill="#F8A01A"/>
+        <path d="M92 18C98 18 106 20 110 24C105 26 99 25 92 23C86 21 80 22 76 24C79 20 85 18 92 18Z" fill="#0072BC"/>
+    </svg>

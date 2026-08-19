@@ -63,13 +63,18 @@
                     <template x-for="rate in ratesResults" :key="rate.courier_code + rate.courier_service_code">
                         <div class="p-5 border-2 border-slate-100 rounded-3xl bg-white hover:border-[#006d5b] transition-all group shadow-sm">
                             <div class="flex items-center justify-between mb-4">
-                                <img :src="rate.courier_logo" class="h-5 grayscale group-hover:grayscale-0 transition" :alt="rate.courier_name">
-                                <span class="text-xs font-black text-[#006d5b]" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(rate.price)"></span>
+                                <div class="h-8 w-20 bg-white p-1 rounded-lg border border-slate-100 flex items-center justify-center">
+                                    <img :src="rate.courier_logo || ('/assets/img/couriers/' + (rate.courier_code || 'default') + '.webp')" 
+                                         class="h-full w-full object-contain" 
+                                         :alt="rate.courier_name"
+                                         onerror="this.src='/assets/img/couriers/default.svg'">
+                                </div>
+                                <span class="text-xs font-black text-[#006d5b]" x-text="rate.formatted_price || ('Rp ' + new Intl.NumberFormat('id-ID').format(rate.price))"></span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-[10px] font-black uppercase text-slate-900" x-text="rate.courier_name"></span>
                                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter" x-text="rate.courier_service_name"></span>
-                                <span class="text-[8px] text-slate-300 mt-2" x-text="'Estimasi: ' + rate.duration"></span>
+                                <span class="text-[8px] text-slate-400 mt-2" x-text="'Estimasi: ' + (rate.formatted_duration || rate.duration)"></span>
                             </div>
                         </div>
                     </template>
@@ -107,18 +112,25 @@
                             <span class="status-badge bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest" x-text="trackResult.status"></span>
                             <span class="text-[10px] font-black text-slate-900" x-text="trackResult.courier?.name"></span>
                         </div>
-                        
-                        <div class="space-y-8 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
-                            <template x-for="history in trackResult.history" :key="history.id">
-                                <div class="relative pl-8">
-                                    <div class="absolute left-0 top-0 w-4 h-4 rounded-full border-4 border-white bg-[#006d5b] shadow-md z-10 scale-75"></div>
-                                    <div class="flex flex-col bg-white p-4 rounded-2xl border border-slate-50 shadow-sm">
-                                        <span class="text-[10px] font-black uppercase text-slate-900" x-text="history.status"></span>
-                                        <p class="text-[10px] text-slate-500 font-medium mt-1.5" x-text="history.note"></p>
-                                        <span class="text-[8px] text-slate-400 mt-2 font-mono" x-text="history.updated_at"></span>
+                        <!-- Clean Vertical Timeline -->
+                        <div class="relative pl-2 max-h-[350px] overflow-y-auto pr-3 no-scrollbar mt-6">
+                            <div class="absolute left-[19px] top-3 bottom-5 w-[2px] bg-slate-300"></div>
+
+                            <div class="space-y-5">
+                                <template x-for="(history, index) in (trackResult.history || [])" :key="index">
+                                    <div class="relative flex items-start gap-3.5">
+                                        <div class="w-5 h-5 rounded-full border-2 bg-white flex items-center justify-center shrink-0 z-10"
+                                             :class="index === ((trackResult.history?.length || 1) - 1) ? 'border-[#006d5b]' : 'border-slate-400'">
+                                            <div class="w-1.5 h-1.5 rounded-full"
+                                                 :class="index === ((trackResult.history?.length || 1) - 1) ? 'bg-[#006d5b]' : 'bg-transparent'"></div>
+                                        </div>
+                                        <div class="flex flex-col pt-0.5 min-w-0">
+                                            <span class="text-[10px] text-slate-400 font-medium leading-none mb-1" x-text="formatTimelineDate(history.updated_at)"></span>
+                                            <p class="text-[11px] font-bold text-slate-800 leading-snug mb-0" x-text="history.note || history.status || '-'"></p>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -198,6 +210,23 @@
                         this.ratesResults = data.pricing || [];
                     } catch (e) { console.error(e); }
                     finally { this.loadingRates = false; }
+                },
+
+                formatTimelineDate(dateStr) {
+                    if (!dateStr) return '';
+                    try {
+                        const d = new Date(dateStr);
+                        if (isNaN(d.getTime())) return dateStr;
+                        const day = d.getDate();
+                        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                        const month = months[d.getMonth()];
+                        const year = d.getFullYear();
+                        const hours = String(d.getHours()).padStart(2, '0');
+                        const mins = String(d.getMinutes()).padStart(2, '0');
+                        return `${day} ${month} ${year} - ${hours}:${mins}`;
+                    } catch (e) {
+                        return dateStr;
+                    }
                 },
 
                 async trackResi() {

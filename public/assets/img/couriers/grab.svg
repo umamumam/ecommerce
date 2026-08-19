@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <circle cx="16" cy="17" r="14" fill="#00B14F"/>
+    <path d="M11 17 C11 13 14 11 18 11 C21 11 23 13 23 15 M11 19 C11 23 14 24 18 24 C21 24 23 22 23 19" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <text x="36" y="21" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" fill="#00B14F">Grab<tspan fill="#1C1C1C">Express</tspan></text>
+    <text x="36" y="31" font-family="'Arial', sans-serif" font-weight="700" font-size="8" fill="#666666" letter-spacing="1">INSTANT &amp; SAMEDAY</text>
+  </g>
+</svg>

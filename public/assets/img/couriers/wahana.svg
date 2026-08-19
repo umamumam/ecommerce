@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <circle cx="16" cy="17" r="14" fill="#004EA2"/>
+    <text x="8" y="23" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" fill="#FEE100">W</text>
+    <text x="36" y="20" font-family="'Arial Black', sans-serif" font-weight="900" font-size="15" fill="#004EA2" letter-spacing="-0.5">WAHANA</text>
+    <text x="36" y="30" font-family="'Arial', sans-serif" font-weight="800" font-size="9" fill="#FEE100" letter-spacing="1">EXPRESS</text>
+  </g>
+</svg>

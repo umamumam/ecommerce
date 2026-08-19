@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <rect x="0" y="4" width="34" height="26" rx="4" fill="#005A36"/>
+    <text x="4" y="22" font-family="'Arial Black', sans-serif" font-weight="900" font-size="13" fill="#FED100">RPX</text>
+    <text x="40" y="22" font-family="'Arial Black', sans-serif" font-weight="900" font-size="18" fill="#005A36">RPX</text>
+    <text x="40" y="31" font-family="'Arial', sans-serif" font-weight="700" font-size="8" fill="#666666" letter-spacing="1">HOLDING</text>
+  </g>
+</svg>

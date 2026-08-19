@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <circle cx="16" cy="17" r="14" fill="#00AA13"/>
+    <circle cx="16" cy="17" r="6" fill="#FFFFFF"/>
+    <circle cx="16" cy="17" r="3" fill="#00AA13"/>
+    <text x="36" y="21" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" fill="#00AA13">go<tspan fill="#1C1C1C">send</tspan></text>
+    <text x="36" y="31" font-family="'Arial', sans-serif" font-weight="700" font-size="8" fill="#666666" letter-spacing="1">BY GOJEK</text>
+  </g>
+</svg>

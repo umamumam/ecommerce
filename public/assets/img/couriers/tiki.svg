@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <!-- TIKI Navy Blue Box -->
+    <rect x="0" y="2" width="40" height="30" rx="4" fill="#003580"/>
+    <text x="5" y="24" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" font-style="italic" fill="#FFCC00" letter-spacing="-1">TIKI</text>
+    <!-- Text -->
+    <text x="48" y="20" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" font-style="italic" fill="#003580">TIKI</text>
+    <text x="48" y="30" font-family="'Arial', sans-serif" font-weight="700" font-size="8" fill="#E31B23" letter-spacing="1">TITIPAN KILAT</text>
+  </g>
+</svg>

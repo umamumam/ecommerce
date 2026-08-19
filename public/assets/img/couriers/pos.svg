@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(8, 7)">
+    <!-- Pos Indonesia Orange Badge -->
+    <circle cx="18" cy="18" r="16" fill="#F47920"/>
+    <!-- Leaping Pigeon/Bird -->
+    <path d="M10 24 C14 20, 18 12, 26 12 C24 16, 20 20, 16 26 Z" fill="#FFFFFF"/>
+    <circle cx="23" cy="14" r="1.5" fill="#F47920"/>
+    <!-- Typography -->
+    <text x="40" y="20" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" fill="#F47920" letter-spacing="-0.5">POS</text>
+    <text x="40" y="31" font-family="'Arial', sans-serif" font-weight="800" font-size="9" fill="#1C3F94" letter-spacing="1">INDONESIA</text>
+  </g>
+</svg>

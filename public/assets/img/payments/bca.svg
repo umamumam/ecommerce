@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+        <rect width="120" height="40" rx="8" fill="#FFFFFF"/>
+        <path d="M12 12C12 10.8954 12.8954 10 14 10H30C35.5228 10 40 14.4772 40 20C40 25.5228 35.5228 30 30 30H14C12.8954 30 12 29.1046 12 28V12Z" fill="#003D79"/>
+        <circle cx="26" cy="20" r="4.5" fill="#FFFFFF"/>
+        <text x="46" y="27" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="20" fill="#003D79" letter-spacing="1">BCA</text>
+    </svg>

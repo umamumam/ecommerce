@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <rect x="2" y="2" width="156" height="46" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <rect x="0" y="3" width="34" height="28" rx="4" fill="#003580"/>
+    <text x="5" y="22" font-family="'Arial Black', sans-serif" font-weight="900" font-size="12" fill="#F47920">SAP</text>
+    <text x="40" y="20" font-family="'Arial Black', sans-serif" font-weight="900" font-size="16" fill="#003580">SAP</text>
+    <text x="40" y="30" font-family="'Arial', sans-serif" font-weight="800" font-size="9" fill="#F47920" letter-spacing="1">EXPRESS</text>
+  </g>
+</svg>
